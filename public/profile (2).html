@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LearnTrack — My Profile</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/theme.css" />
+  <script src="/js/notifications.js"></script>
+</head>
+<body class="antialiased text-gray-900 bg-gray-50">
+  <header class="header-sticky bg-white" id="header">
+    <nav class="max-w-7xl mx-auto px-6 py-4">
+      <div class="flex items-center justify-between">
+        <a href="/landing.html" class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">LearnTrack</a>
+        <div class="hidden md:flex items-center gap-8">
+          <a href="/studentDashboard.html" class="nav-link text-gray-700 hover:text-indigo-600 font-medium">Dashboard</a>
+          <a href="/profile.html" class="nav-link text-indigo-600 font-semibold">Profile</a>
+          <button id="signout-btn" class="px-4 py-2 text-gray-700 hover:text-indigo-600 font-medium">Sign Out</button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="max-w-4xl mx-auto p-6 space-y-6">
+    <section class="hero-gradient rounded-2xl p-6 text-white">
+      <h1 class="text-3xl font-bold mb-1">My Profile</h1>
+      <p class="text-white/90">Manage your account information and preferences</p>
+    </section>
+
+    <!-- Profile Information -->
+    <section class="bg-white rounded-2xl shadow p-6 border border-gray-100 space-y-6">
+      <h2 class="text-xl font-bold mb-4">Personal Information</h2>
+      
+      <!-- Profile Photo -->
+      <div class="flex items-center gap-6">
+        <div id="profile-avatar" class="w-24 h-24 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white text-3xl font-bold">
+          SD
+        </div>
+        <div>
+          <button id="upload-photo-btn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 mb-2">
+            Upload Photo
+          </button>
+          <p class="text-sm text-gray-600">JPG, PNG or GIF. Max 2MB</p>
+          <input type="file" id="photo-input" accept="image/*" class="hidden" />
+        </div>
+      </div>
+
+      <!-- Form Fields -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-semibold mb-1">Full Name *</label>
+          <input 
+            id="full-name" 
+            type="text" 
+            placeholder="Enter your full name" 
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" 
+          />
+        </div>
+        
+        <div>
+          <label class="block text-sm font-semibold mb-1">Email *</label>
+          <input 
+            id="email" 
+            type="email" 
+            placeholder="your.email@example.com" 
+            class="w-full px-4 py-2 border rounded-lg bg-gray-50" 
+            readonly 
+          />
+          <p class="text-xs text-gray-500 mt-1">Email cannot be changed</p>
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="block text-sm font-semibold mb-1">Bio</label>
+          <textarea 
+            id="bio" 
+            rows="4" 
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500" 
+            placeholder="Tell us about yourself, your interests, and what you're passionate about..."
+          ></textarea>
+        </div>
+        
+        <div class="md:col-span-2">
+          <label class="block text-sm font-semibold mb-1">Learning Goals</label>
+          <input 
+            id="learning-goals" 
+            type="text" 
+            placeholder="e.g., Become a full-stack developer, Master UI/UX design" 
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500" 
+          />
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="block text-sm font-semibold mb-1">Interests</label>
+          <input 
+            id="interests" 
+            type="text" 
+            placeholder="e.g., Web Development, Data Science, Digital Marketing" 
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500" 
+          />
+          <p class="text-xs text-gray-500 mt-1">Separate multiple interests with commas</p>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex justify-end gap-3 border-t pt-6">
+        <button id="cancel-btn" class="px-6 py-3 border border-gray-300 rounded-lg font-semibold hover:bg-gray-50 transition-colors">
+          Cancel
+        </button>
+        <button id="save-btn" class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all">
+          Save Changes
+        </button>
+      </div>
+    </section>
+
+    <!-- Account Settings -->
+    <section class="bg-white rounded-2xl shadow p-6 border border-gray-100 space-y-6">
+      <h2 class="text-xl font-bold mb-4">Account Settings</h2>
+      
+      <div class="space-y-4">
+        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+          <div>
+            <h3 class="font-semibold">Change Password</h3>
+            <p class="text-sm text-gray-600">Update your password regularly for security</p>
+          </div>
+          <button id="change-password-btn" class="px-4 py-2 border border-gray-300 rounded-lg font-semibold hover:bg-white transition-colors">
+            Change
+          </button>
+        </div>
+
+        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+          <div>
+            <h3 class="font-semibold">Email Notifications</h3>
+            <p class="text-sm text-gray-600">Receive updates about new courses and features</p>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input id="notifications-toggle" type="checkbox" checked class="sr-only peer">
+            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- Learning Statistics -->
+    <section class="bg-white rounded-2xl shadow p-6 border border-gray-100">
+      <h2 class="text-xl font-bold mb-4">Your Learning Progress</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg">
+          <div id="stat-enrolled" class="text-3xl font-bold text-blue-600">0</div>
+          <div class="text-sm text-gray-600 mt-1">Enrolled Courses</div>
+        </div>
+        
+        <div class="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg">
+          <div id="stat-completed" class="text-3xl font-bold text-green-600">0</div>
+          <div class="text-sm text-gray-600 mt-1">Completed</div>
+        </div>
+        
+        <div class="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg">
+          <div id="stat-hours" class="text-3xl font-bold text-purple-600">0</div>
+          <div class="text-sm text-gray-600 mt-1">Hours Learned</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/supabaseClient.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    const API_BASE = window.__API_BASE || 'http://localhost:5000';
+    const notify = window.NotificationManager;
+
+    // Get all form elements
+    const fullNameEl = document.getElementById('full-name');
+    const emailEl = document.getElementById('email');
+    const bioEl = document.getElementById('bio');
+    const learningGoalsEl = document.getElementById('learning-goals');
+    const interestsEl = document.getElementById('interests');
+    const avatarEl = document.getElementById('profile-avatar');
+    
+    const saveBtnEl = document.getElementById('save-btn');
+    const cancelBtnEl = document.getElementById('cancel-btn');
+    const uploadPhotoBtn = document.getElementById('upload-photo-btn');
+    const photoInput = document.getElementById('photo-input');
+    const changePasswordBtn = document.getElementById('change-password-btn');
+    const signoutBtn = document.getElementById('signout-btn');
+
+    // Get authentication token
+    function getToken() {
+      return sessionStorage.getItem('auth_token') || sessionStorage.getItem('token') || null;
+    }
+
+    // Load user profile data
+    async function loadProfile() {
+      try {
+        const token = getToken();
+        if (!token) {
+          window.location.href = '/signIn.html';
+          return;
+        }
+
+        const response = await fetch(`${API_BASE}/api/profiles/me`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        if (!response.ok) {
+          window.location.href = '/signIn.html';
+          return;
+        }
+
+        const { data } = await response.json();
+        
+        if (data) {
+          // Basic info
+          if (fullNameEl) fullNameEl.value = data.full_name || '';
+          if (emailEl) emailEl.value = data.email || '';
+          if (bioEl) bioEl.value = data.bio || '';
+          if (learningGoalsEl) learningGoalsEl.value = data.learning_goals || '';
+          if (interestsEl) interestsEl.value = data.interests || '';
+          
+          // Update avatar with initials
+          if (data.full_name && avatarEl) {
+            const initials = data.full_name
+              .split(' ')
+              .map(n => n[0])
+              .join('')
+              .toUpperCase()
+              .slice(0, 2);
+            avatarEl.textContent = initials;
+          }
+        }
+      } catch (error) {
+        console.error('Error loading profile:', error);
+        notify?.show('Failed to load profile data', 'error');
+      }
+    }
+
+    // Load student statistics
+    async function loadStatistics() {
+      try {
+        const token = getToken();
+        if (!token) return;
+
+        // Get enrolled courses
+        const enrolledResponse = await fetch(`${API_BASE}/api/enrollments/my-courses`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (enrolledResponse.ok) {
+          const { data: courses } = await enrolledResponse.json();
+          
+          // Update stats
+          const enrolledCount = courses.length;
+          const completedCount = courses.filter(c => c.progress === 100).length;
+          const totalHours = 0; // Calculate from course durations
+          
+          document.getElementById('stat-enrolled').textContent = enrolledCount;
+          document.getElementById('stat-completed').textContent = completedCount;
+          document.getElementById('stat-hours').textContent = totalHours;
+        }
+      } catch (error) {
+        console.error('Error loading statistics:', error);
+      }
+    }
+
+    // Save profile changes
+    async function saveProfile() {
+      const token = getToken();
+      if (!token) {
+        notify?.show('Please sign in to continue', 'error');
+        return;
+      }
+
+      // Validate required fields
+      if (!fullNameEl.value.trim()) {
+        notify?.show('Full name is required', 'error');
+        fullNameEl.focus();
+        return;
+      }
+
+      // Prepare data
+      const profileData = {
+        full_name: fullNameEl.value.trim(),
+        bio: bioEl.value.trim() || null,
+        learning_goals: learningGoalsEl.value.trim() || null,
+        interests: interestsEl.value.trim() || null
+      };
+
+      try {
+        saveBtnEl.disabled = true;
+        saveBtnEl.textContent = 'Saving...';
+
+        const response = await fetch(`${API_BASE}/api/profiles/me`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(profileData)
+        });
+
+        if (!response.ok) {
+          const error = await response.json().catch(() => ({ error: 'Failed to save' }));
+          throw new Error(error.error || 'Failed to save profile');
+        }
+
+        notify?.show('Profile updated successfully!', 'success');
+        
+        // Update avatar
+        const initials = profileData.full_name
+          .split(' ')
+          .map(n => n[0])
+          .join('')
+          .toUpperCase()
+          .slice(0, 2);
+        if (avatarEl) avatarEl.textContent = initials;
+
+      } catch (error) {
+        console.error('Error saving profile:', error);
+        notify?.show(error.message || 'Failed to save profile', 'error');
+      } finally {
+        saveBtnEl.disabled = false;
+        saveBtnEl.textContent = 'Save Changes';
+      }
+    }
+
+    // Cancel button - reload original data
+    function cancelChanges() {
+      if (confirm('Discard all changes?')) {
+        loadProfile();
+        notify?.show('Changes discarded', 'info');
+      }
+    }
+
+    // Upload photo button
+    uploadPhotoBtn?.addEventListener('click', () => {
+      photoInput?.click();
+    });
+
+    // Handle photo upload
+    photoInput?.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      // Validate file
+      if (!file.type.startsWith('image/')) {
+        notify?.show('Please select an image file', 'error');
+        return;
+      }
+
+      if (file.size > 2 * 1024 * 1024) {
+        notify?.show('Image must be less than 2MB', 'error');
+        return;
+      }
+
+      notify?.show('Photo upload feature coming soon!', 'info');
+      // TODO: Implement photo upload to Supabase Storage
+    });
+
+    // Change password
+    changePasswordBtn?.addEventListener('click', () => {
+      // Redirect to password change page or show modal
+      window.location.href = '/forgot-password.html';
+    });
+
+    // Sign out
+    signoutBtn?.addEventListener('click', async () => {
+      if (window.AuthManager) {
+        await window.AuthManager.signOut();
+      }
+      window.location.href = '/landing.html';
+    });
+
+    // Event listeners
+    saveBtnEl?.addEventListener('click', (e) => {
+      e.preventDefault();
+      saveProfile();
+    });
+
+    cancelBtnEl?.addEventListener('click', (e) => {
+      e.preventDefault();
+      cancelChanges();
+    });
+
+    // Load data on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      loadProfile();
+      loadStatistics();
+    });
+  </script>
+</body>
+</html>

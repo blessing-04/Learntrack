@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LearnTrack — Instructor Payment</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/theme.css" />
+  <script src="/js/notifications.js"></script>
+</head>
+<body class="antialiased text-gray-900 bg-gray-50">
+  <!-- Header -->
+  <header class="header-sticky bg-white" id="header">
+    <nav class="max-w-7xl mx-auto px-6 py-4">
+      <div class="flex items-center justify-between">
+        <a href="/landing.html" class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">LearnTrack</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="max-w-4xl mx-auto p-6 space-y-6 mt-8">
+    <!-- Hero Section -->
+    <section class="hero-gradient rounded-2xl p-8 text-white text-center">
+      <div class="max-w-2xl mx-auto">
+        <svg class="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <h1 class="text-3xl md:text-4xl font-bold mb-2">Complete Your Registration</h1>
+        <p class="text-white/90 text-lg">One-time setup fee to become an instructor</p>
+      </div>
+    </section>
+
+    <!-- Payment Info -->
+    <section class="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+      <div class="max-w-2xl mx-auto">
+        <h2 class="text-2xl font-bold mb-6 text-center">Instructor Registration Fee</h2>
+        
+        <!-- Price Display -->
+        <div class="text-center mb-8">
+          <div class="inline-block bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-2xl p-8">
+            <p class="text-sm uppercase tracking-wide mb-2">One-time Payment</p>
+            <p class="text-5xl font-bold">R 1,500</p>
+            <p class="text-sm mt-2">South African Rand</p>
+          </div>
+        </div>
+
+        <!-- Benefits List -->
+        <div class="mb-8">
+          <h3 class="font-bold text-lg mb-4 text-center">What You Get</h3>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <div>
+                <p class="font-semibold">Unlimited Courses</p>
+                <p class="text-sm text-gray-600">Create and publish as many courses as you want</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <div>
+                <p class="font-semibold">Student Management</p>
+                <p class="text-sm text-gray-600">Track and manage your student enrollments</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <div>
+                <p class="font-semibold">Revenue Sharing</p>
+                <p class="text-sm text-gray-600">Earn 70% of course sales revenue</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <div>
+                <p class="font-semibold">Analytics Dashboard</p>
+                <p class="text-sm text-gray-600">Track course performance and earnings</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <div>
+                <p class="font-semibold">Marketing Support</p>
+                <p class="text-sm text-gray-600">Get featured on our platform</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <div>
+                <p class="font-semibold">Priority Support</p>
+                <p class="text-sm text-gray-600">24/7 instructor assistance</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- User Info Display -->
+        <div class="bg-gray-50 rounded-lg p-4 mb-6">
+          <h3 class="font-semibold mb-2">Account Details</h3>
+          <p class="text-sm"><span class="font-medium">Email:</span> <span id="user-email">Loading...</span></p>
+          <p class="text-sm"><span class="font-medium">Name:</span> <span id="user-name">Loading...</span></p>
+        </div>
+
+        <!-- Payment Button -->
+        <button id="pay-now-btn" class="w-full py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold text-lg rounded-lg hover:shadow-xl transition-all">
+          <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+          </svg>
+          Pay R 1,500 Now
+        </button>
+
+        <!-- Security Notice -->
+        <div class="mt-6 text-center">
+          <p class="text-xs text-gray-500">
+            <svg class="inline-block w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+            </svg>
+            Secure payment powered by Stripe. Your payment information is encrypted and secure.
+          </p>
+        </div>
+
+        <!-- Cancel Link -->
+        <div class="mt-4 text-center">
+          <a href="/landing.html" class="text-sm text-gray-600 hover:text-indigo-600">
+            Cancel and return to homepage
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://js.stripe.com/v3/"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/supabaseClient.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    const API_BASE = window.__API_BASE || 'http://localhost:5000';
+    const PAYMENT_AMOUNT = 150000; // In cents (R 1,500.00 = 150000 cents)
+    
+    let userEmail = '';
+    let userName = '';
+    let userId = '';
+
+    // Load user information
+    async function loadUserInfo() {
+      try {
+        // Get user from URL params (set during signup)
+        const urlParams = new URLSearchParams(window.location.search);
+        let email = urlParams.get('email');
+        let name = urlParams.get('name');
+        let tempUserId = urlParams.get('userId');
+
+        // If not in URL (e.g., returning from Stripe), check sessionStorage
+        if (!email || !name) {
+          email = sessionStorage.getItem('instructor_payment_email');
+          name = sessionStorage.getItem('instructor_payment_name');
+          tempUserId = sessionStorage.getItem('instructor_payment_userId');
+        } else {
+          // Store in sessionStorage for when we return from Stripe
+          sessionStorage.setItem('instructor_payment_email', email);
+          sessionStorage.setItem('instructor_payment_name', name);
+          sessionStorage.setItem('instructor_payment_userId', tempUserId);
+        }
+
+        if (!email || !name) {
+          window.Notifications.error('Missing user information. Please sign up again.');
+          setTimeout(() => window.location.href = '/signUp.html', 2000);
+          return;
+        }
+
+        userEmail = email;
+        userName = name;
+        userId = tempUserId;
+
+        document.getElementById('user-email').textContent = email;
+        document.getElementById('user-name').textContent = name;
+      } catch (error) {
+        console.error('Error loading user info:', error);
+        window.Notifications.error('Failed to load user information');
+      }
+    }
+
+    // Initialize Stripe payment
+    async function initiatePayment() {
+      if (!userEmail || !userName) {
+        window.Notifications.error('User information not loaded. Please refresh the page.');
+        return;
+      }
+
+      try {
+        // Create payment session on backend
+        console.log('Creating payment session for:', userEmail, userName, userId);
+        
+        const response = await fetch(`${API_BASE}/api/create-instructor-payment`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: userEmail,
+            name: userName,
+            userId: userId,
+            amount: PAYMENT_AMOUNT
+          })
+        });
+
+        console.log('Response status:', response.status);
+        const data = await response.json();
+        console.log('Response data:', data);
+
+        if (!response.ok) {
+          const errorMsg = data.error || 'Failed to create payment session';
+          console.error('Backend error:', errorMsg);
+          window.Notifications.error(errorMsg);
+          return;
+        }
+
+        // Check if we have the required data
+        if (!data.publishableKey) {
+          console.error('Missing Stripe publishable key in response');
+          window.Notifications.error('Payment configuration error. Please contact support.');
+          return;
+        }
+
+        if (!data.sessionId) {
+          console.error('Missing session ID in response');
+          window.Notifications.error('Payment session creation failed. Please try again.');
+          return;
+        }
+
+        // Initialize Stripe
+        console.log('Initializing Stripe with key:', data.publishableKey?.substring(0, 15) + '...');
+        const stripe = Stripe(data.publishableKey);
+
+        // Redirect to Stripe Checkout
+        console.log('Redirecting to Stripe Checkout...');
+        const result = await stripe.redirectToCheckout({
+          sessionId: data.sessionId
+        });
+
+        if (result.error) {
+          console.error('Stripe redirect error:', result.error);
+          window.Notifications.error(result.error.message);
+        }
+      } catch (error) {
+        console.error('Payment error:', error);
+        console.error('Error details:', error.message, error.stack);
+        window.Notifications.error(`Failed to process payment: ${error.message}`);
+      }
+    }
+
+    // Check if returning from successful payment
+    async function checkPaymentSuccess() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const sessionId = urlParams.get('session_id');
+      
+      if (sessionId) {
+        // Payment was successful, verify it
+        window.Notifications.success('Payment successful! Verifying...');
+        
+        try {
+          const response = await fetch(`${API_BASE}/api/verify-instructor-payment`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              sessionId: sessionId,
+              email: userEmail || urlParams.get('email'),
+              userId: userId || urlParams.get('userId')
+            })
+          });
+
+          const data = await response.json();
+
+          if (response.ok && data.success) {
+            // Clear stored payment info
+            sessionStorage.removeItem('instructor_payment_email');
+            sessionStorage.removeItem('instructor_payment_name');
+            sessionStorage.removeItem('instructor_payment_userId');
+            
+            setTimeout(() => {
+              window.location.href = '/signIn.html?registered=true';
+            }, 2000);
+          } else {
+            window.Notifications.error(data.error || 'Payment verification failed');
+          }
+        } catch (error) {
+          console.error('Payment verification error:', error);
+          window.Notifications.error('Failed to verify payment. Please contact support.');
+        }
+      }
+    }
+
+    // Event listeners
+    document.getElementById('pay-now-btn').addEventListener('click', initiatePayment);
+
+    // Load user info on page load and check for payment success
+    document.addEventListener('DOMContentLoaded', () => {
+      loadUserInfo();
+      checkPaymentSuccess();
+    });
+  </script>
+</body>
+</html>

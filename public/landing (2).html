@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LearnTrack — Master Skills That Matter</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * { scroll-behavior: smooth; }
+    
+    /* Animated gradient for hero */
+    .hero-gradient {
+      background: linear-gradient(135deg, rgba(99,102,241,0.95), rgba(168,85,247,0.9) 50%, rgba(236,72,153,0.85) 100%);
+      background-size: 200% 200%;
+      animation: gradientShift 15s ease infinite;
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Floating blobs */
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(40px);
+      opacity: 0.15;
+      animation: float 8s ease-in-out infinite;
+    }
+    .blob1 { width: 300px; height: 300px; left: -50px; top: -50px; background: rgba(255,255,255,0.2); animation-duration: 10s; }
+    .blob2 { width: 200px; height: 200px; right: -30px; top: 80px; background: rgba(255,255,255,0.15); animation-duration: 8s; }
+    .blob3 { width: 150px; height: 150px; left: 25%; top: 180px; background: rgba(255,255,255,0.1); animation-duration: 12s; }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(20px, -20px) scale(1.05); }
+      66% { transform: translate(-20px, 20px) scale(0.95); }
+    }
+
+    /* Card animations */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Hover effects */
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+
+    .nav-link {
+      position: relative;
+      transition: color 0.3s ease;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: currentColor;
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* Button effects */
+    .btn-primary {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s ease, height 0.6s ease;
+    }
+    .btn-primary:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+    .btn-primary:hover {
+      transform: scale(1.05);
+    }
+
+    /* Sticky header */
+    .header-sticky {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+    .header-scrolled {
+      background: rgba(255,255,255,0.95);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    /* Stats counter pulse */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+    }
+    .stat-pulse {
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    /* Course card shine effect */
+    .shine {
+      position: relative;
+      overflow: hidden;
+    }
+    .shine::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s ease;
+    }
+    .shine:hover::before {
+      left: 100%;
+    }
+
+    /* Mobile menu animation */
+    .mobile-menu {
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+    }
+    .mobile-menu.open {
+      transform: translateX(0);
+    }
+  </style>
+</head>
+<body class="antialiased text-gray-900 bg-white">
+
+  <!-- HEADER -->
+  <header class="header-sticky bg-white/80" id="header">
+    <nav class="max-w-7xl mx-auto px-6 py-4">
+      <div class="flex items-center justify-between">
+        <!-- Logo -->
+        <a href="#" class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent hover:scale-105 transition-transform">
+          LearnTrack
+        </a>
+
+        <!-- Desktop Navigation -->
+        <div class="hidden md:flex items-center gap-8">
+          <a href="#features" class="nav-link text-gray-700 hover:text-indigo-600 font-medium">Features</a>
+          <a href="#courses" class="nav-link text-gray-700 hover:text-indigo-600 font-medium">Courses</a>
+          <a href="#how-it-works" class="nav-link text-gray-700 hover:text-indigo-600 font-medium">How It Works</a>
+          <a href="#testimonials" class="nav-link text-gray-700 hover:text-indigo-600 font-medium">Testimonials</a>
+        </div>
+
+        <!-- Auth Buttons -->
+        <div class="hidden md:flex items-center gap-4">
+          <a href="signIn.html" class="px-5 py-2 text-gray-700 hover:text-indigo-600 font-semibold transition-colors">
+            Sign In
+          </a>
+          <a href="signUp.html" class="px-5 py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold hover:shadow-lg transition-all hover:scale-105">
+            Sign Up
+          </a>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-btn" class="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Mobile Menu -->
+      <div id="mobile-menu" class="mobile-menu fixed top-0 right-0 h-full w-64 bg-white shadow-2xl md:hidden p-6 z-50">
+        <button id="close-menu" class="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-lg">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+        <div class="mt-12 flex flex-col gap-4">
+          <a href="#features" class="text-gray-700 hover:text-indigo-600 font-medium py-2">Features</a>
+          <a href="#courses" class="text-gray-700 hover:text-indigo-600 font-medium py-2">Courses</a>
+          <a href="#how-it-works" class="text-gray-700 hover:text-indigo-600 font-medium py-2">How It Works</a>
+          <a href="#testimonials" class="text-gray-700 hover:text-indigo-600 font-medium py-2">Testimonials</a>
+          <hr class="my-4" />
+          <a href="signIn.html" class="text-gray-700 hover:text-indigo-600 font-semibold py-2">Sign In</a>
+          <a href="signUp.html" class="px-5 py-3 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold text-center hover:shadow-lg transition-all">Sign Up</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="relative overflow-hidden">
+    <div class="hero-gradient text-white py-20 md:py-28 px-6">
+      <div class="blob blob1"></div>
+      <div class="blob blob2"></div>
+      <div class="blob blob3"></div>
+
+      <div class="max-w-7xl mx-auto relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <!-- Left Content -->
+          <div class="text-center lg:text-left">
+            <div class="inline-block mb-4 px-4 py-2 bg-white/20 rounded-full text-sm font-semibold backdrop-blur-sm">
+              <svg class="inline-block w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path></svg> Join 200,000+ learners worldwide
+            </div>
+            <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6">
+              Master Skills That Matter
+            </h1>
+            <p class="text-xl text-white/90 mb-8 max-w-2xl">
+              Learn from industry experts with interactive courses, live sessions, and real-world projects. Build your future, one skill at a time.
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
+              <a href="#signup" class="btn-primary px-8 py-4 rounded-xl bg-white text-indigo-600 font-bold shadow-xl hover:shadow-2xl">
+                <span class="relative z-10">Start Learning Today</span>
+              </a>
+            </div>
+
+            <!-- Quick Features -->
+            <div class="flex flex-wrap gap-3 justify-center lg:justify-start">
+              <span class="px-4 py-2 bg-white/10 rounded-lg text-sm backdrop-blur-sm"><svg class="inline-block w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> 7-day free courses</span>
+              <span class="px-4 py-2 bg-white/10 rounded-lg text-sm backdrop-blur-sm"><svg class="inline-block w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Cancel anytime</span>
+              <span class="px-4 py-2 bg-white/10 rounded-lg text-sm backdrop-blur-sm"><svg class="inline-block w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Certificates included</span>
+            </div>
+          </div>
+
+          <!-- Right Stats Card -->
+          <div class="relative">
+            <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-white/20">
+              <div class="grid grid-cols-2 gap-6 mb-6">
+                <div class="text-center">
+                  <p class="text-4xl font-bold stat-pulse" data-target="200000">0</p>
+                  <p class="text-white/80 text-sm mt-2">Active Learners</p>
+                </div>
+                <div class="text-center">
+                  <p class="text-4xl font-bold stat-pulse" data-target="6500">0</p>
+                  <p class="text-white/80 text-sm mt-2">Expert Courses</p>
+                </div>
+              </div>
+              
+              <div class="grid grid-cols-2 gap-6">
+                <div class="text-center">
+                  <p class="text-4xl font-bold stat-pulse" data-target="4800">0</p>
+                  <p class="text-white/80 text-sm mt-2">Instructors</p>
+                </div>
+                <div class="text-center">
+                  <p class="text-4xl font-bold">4.9<svg class="inline-block w-4 h-4 fill-current" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></p>
+                  <p class="text-white/80 text-sm mt-2">Average Rating</p>
+                </div>
+              </div>
+
+              <div class="mt-6 pt-6 border-t border-white/20">
+                <div class="flex items-center gap-3">
+                  <div class="flex -space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 border-2 border-white"></div>
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-blue-500 border-2 border-white"></div>
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 border-2 border-white"></div>
+                  </div>
+                  <p class="text-sm text-white/90">Trusted by learners from 150+ countries</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Wave -->
+      <div class="absolute bottom-0 left-0 right-0">
+        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 60C240 20 480 100 720 60C960 20 1200 100 1440 60V120H0V60Z" fill="white"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <main class="max-w-7xl mx-auto px-6">
+
+    <!-- FEATURES -->
+    <section id="features" class="py-20">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl md:text-5xl font-bold mb-4">Everything You Need to Succeed</h2>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">Powerful features designed to accelerate your learning journey</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="fade-up card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+          <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center text-3xl mb-4"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Interactive Learning</h3>
+          <p class="text-gray-600">Engage with hands-on exercises, quizzes, and real-world projects that make learning stick.</p>
+        </div>
+
+        <div class="fade-up card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+          <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center text-3xl mb-4"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+          </div>
+          <h3 class="text-xl font-bold mb-3">AI-Powered Paths</h3>
+          <p class="text-gray-600">Get personalized course recommendations based on your goals and learning style.</p>
+        </div>
+
+        <div class="fade-up card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+          <div class="w-16 h-16 bg-gradient-to-br from-pink-500 to-pink-600 rounded-2xl flex items-center justify-center text-3xl mb-4"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 8-6 4 6 4V8Z"></path><rect width="14" height="12" x="2" y="6" rx="2" ry="2"></rect></svg>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Live Sessions</h3>
+          <p class="text-gray-600">Join live webinars and Q&A sessions with instructors and fellow learners.</p>
+        </div>
+
+        <div class="fade-up card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+          <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center text-3xl mb-4"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"></rect><path d="M12 18h.01"></path></svg>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Learn Anywhere</h3>
+          <p class="text-gray-600">Download courses for offline access. Learn on your phone, tablet, or desktop.</p>
+        </div>
+
+        <div class="fade-up card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+          <div class="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-2xl flex items-center justify-center text-3xl mb-4"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Certificates</h3>
+          <p class="text-gray-600">Earn industry-recognized certificates to showcase your skills on LinkedIn.</p>
+        </div>
+
+        <div class="fade-up card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+          <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl flex items-center justify-center text-3xl mb-4"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" x2="12" y1="20" y2="10"></line><line x1="18" x2="18" y1="20" y2="4"></line><line x1="6" x2="6" y1="20" y2="16"></line></svg>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Track Progress</h3>
+          <p class="text-gray-600">Monitor your learning journey with detailed analytics and achievement badges.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="how-it-works" class="py-20 bg-gradient-to-br from-indigo-50 to-purple-50 -mx-6 px-6 rounded-3xl">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl md:text-5xl font-bold mb-4">How It Works</h2>
+        <p class="text-xl text-gray-600">Start learning in three simple steps</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div class="fade-up text-center">
+          <div class="w-20 h-20 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-6 shadow-xl">
+            1
+          </div>
+          <h3 class="text-2xl font-bold mb-3">Choose Your Path</h3>
+          <p class="text-gray-600">Browse thousands of courses across tech, business, design, and more. Filter by skill level and duration.</p>
+        </div>
+
+        <div class="fade-up text-center">
+          <div class="w-20 h-20 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-6 shadow-xl">
+            2
+          </div>
+          <h3 class="text-2xl font-bold mb-3">Learn & Practice</h3>
+          <p class="text-gray-600">Watch videos, complete exercises, and build projects at your own pace. Get feedback from instructors.</p>
+        </div>
+
+        <div class="fade-up text-center">
+          <div class="w-20 h-20 bg-gradient-to-br from-pink-600 to-red-600 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-6 shadow-xl">
+            3
+          </div>
+          <h3 class="text-2xl font-bold mb-3">Earn & Grow</h3>
+          <p class="text-gray-600">Complete courses to earn certificates. Build your portfolio and advance your career with new skills.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TOP COURSES -->
+    <section id="courses" class="py-20">
+      <div class="flex items-center justify-between mb-12">
+        <div>
+          <h2 class="text-4xl font-bold mb-2">Featured Courses</h2>
+          <p class="text-gray-600">Most popular courses this month</p>
+        </div>
+      </div>
+
+      <div id="courses-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Loading State -->
+        <div class="col-span-full text-center py-12">
+          <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+          <p class="text-gray-600 mt-4">Loading courses...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section id="testimonials" class="py-20">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl md:text-5xl font-bold mb-4">What Our Learners Say</h2>
+        <p class="text-xl text-gray-600">Join thousands of successful students</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="fade-up card-hover bg-gradient-to-br from-blue-50 to-indigo-50 p-8 rounded-2xl">
+          <div class="text-yellow-500 text-2xl mb-4"><svg class="inline-block w-4 h-4 fill-current" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg class="inline-block w-4 h-4 fill-current" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg class="inline-block w-4 h-4 fill-current" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg class="inline-block w-4 h-4 fill-current" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg class="inline-block w-4 h-4 fill-current" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+          <p class="text-gray-700 mb-6">"LearnTrack helped me transition from marketing to web development. The instructors are amazing and the projects are real-world applicable!"</p>
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-500"></div>
+            <div>
+              <p class="font-bold">Sarah Johnson</p>
+              <p class="text-sm text-gray-600">Frontend Developer</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="fade-up card-hover bg-gradient-to-br from-purple-50 to-pink-50 p-8 rounded-2xl">
+          <div class="text-yellow-500 text-2xl mb-4"><svg class="inline-block w-4 h-4 fill-current" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg class="inline-block w-4 h-4 fill-current" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg class="inline-block w-4 h-4 fill-current" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg class="inline-block w-4 h-4 fill-current" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg class="inline-block w-4 h-4 fill-current" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+          <p class="text-gray-700 mb-6">"Best investment in my career! I landed my dream job as a UX designer within 3 months of completing the courses. Highly recommend!"</p>
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500"></div>
+            <div>
+              <p class="font-bold">Michael Chen</p>
+              <p class="text-sm text-gray-600">UX Designer</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="fade-up card-hover bg-gradient-to-br from-green-50 to-teal-50 p-8 rounded-2xl">
+          <div class="text-yellow-500 text-2xl mb-4"><svg class="inline-block w-4 h-4 fill-current" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg class="inline-block w-4 h-4 fill-current" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg class="inline-block w-4 h-4 fill-current" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg class="inline-block w-4 h-4 fill-current" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg class="inline-block w-4 h-4 fill-current" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+          <p class="text-gray-700 mb-6">"The data science track is phenomenal. Clear explanations, practical projects, and excellent support from instructors. Worth every penny!"</p>
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-green-500 to-teal-500"></div>
+            <div>
+              <p class="font-bold">Emily Rodriguez</p>
+              <p class="text-sm text-gray-600">Data Analyst</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section id="signup" class="py-20 bg-gradient-to-br from-indigo-600 to-purple-600 -mx-6 px-6 rounded-3xl text-white text-center">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-4xl md:text-5xl font-bold mb-6">Ready to Transform Your Career?</h2>
+        <p class="text-xl text-white/90 mb-8">Join 200,000+ learners already upskilling on LearnHub. Start your 7-day free trial today.</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+          <a href="signUp.html" class="btn-primary px-10 py-4 rounded-xl bg-white text-indigo-600 font-bold text-lg shadow-2xl">
+            <span class="relative z-10">SignUp Now</span>
+          </a>
+        </div>
+        <p class="text-white/80 text-sm">No credit card required • Cancel anytime • Full access to all courses</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-gray-900 text-white mt-20">
+    <div class="max-w-7xl mx-auto px-6 py-16">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+        <!-- Brand -->
+        <div>
+          <h3 class="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent mb-4">LearnTrack</h3>
+          <p class="text-gray-400 mb-6">Empowering learners worldwide to master new skills and achieve their dreams.</p>
+          <div class="flex gap-4">
+            <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-indigo-600 transition-colors">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.6c-.9.4-1.8.7-2.8.8 1-.6 1.8-1.6 2.2-2.7-1 .6-2 1-3.1 1.2-.9-1-2.2-1.6-3.6-1.6-2.7 0-4.9 2.2-4.9 4.9 0 .4 0 .8.1 1.1C7.7 8.1 4.1 6.1 1.7 3.1c-.4.7-.6 1.6-.6 2.5 0 1.7.9 3.2 2.2 4.1-.8 0-1.6-.2-2.2-.6v.1c0 2.4 1.7 4.4 3.9 4.8-.4.1-.8.2-1.3.2-.3 0-.6 0-.9-.1.6 2 2.4 3.4 4.6 3.4-1.7 1.3-3.8 2.1-6.1 2.1-.4 0-.8 0-1.2-.1 2.2 1.4 4.8 2.2 7.5 2.2 9.1 0 14-7.5 14-14v-.6c1-.7 1.8-1.6 2.5-2.5z"/></svg>
+            </a>
+            <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-indigo-600 transition-colors">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.2c-5.5 0-10 4.5-10 10 0 4.4 2.9 8.2 6.8 9.5.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.3-3.4-1.3-.5-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.6.3-1.1.6-1.3-2.2-.3-4.6-1.1-4.6-4.9 0-1.1.4-2 1-2.7-.1-.2-.4-1.2.1-2.5 0 0 .8-.3 2.7 1 .8-.2 1.7-.3 2.5-.3s1.7.1 2.5.3c1.9-1.3 2.7-1 2.7-1 .5 1.3.2 2.3.1 2.5.6.7 1 1.6 1 2.7 0 3.8-2.3 4.7-4.6 4.9.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4-1.3 6.8-5.1 6.8-9.5 0-5.5-4.5-10-10-10z"/></svg>
+            </a>
+            <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-indigo-600 transition-colors">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H6.5v-7H9v7zM7.7 8.7c-.8 0-1.3-.5-1.3-1.2s.5-1.2 1.4-1.2 1.3.5 1.3 1.2-.5 1.2-1.4 1.2zM18 17h-2.4v-3.8c0-1.1-.7-1.3-1-1.3s-1.2.2-1.2 1.3V17h-2.5v-7h2.5v1c.3-.6 1-1 2.2-1s2.4 1 2.4 3v4z"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Platform -->
+        <div>
+          <h4 class="font-bold text-lg mb-4">Platform</h4>
+          <ul class="space-y-3 text-gray-400">
+            <li><a href="#courses" class="hover:text-white transition-colors">Browse Courses</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Become Instructor</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Enterprise</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Mobile App</a></li>
+          </ul>
+        </div>
+
+        <!-- Support -->
+        <div>
+          <h4 class="font-bold text-lg mb-4">Support</h4>
+          <ul class="space-y-3 text-gray-400">
+            <li><a href="#" class="hover:text-white transition-colors">Help Center</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Contact Us</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">FAQs</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">System Status</a></li>
+          </ul>
+        </div>
+
+        <!-- Company -->
+        <div>
+          <h4 class="font-bold text-lg mb-4">Company</h4>
+          <ul class="space-y-3 text-gray-400">
+            <li><a href="#" class="hover:text-white transition-colors">About Us</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Careers</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Blog</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Press Kit</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        <p class="text-gray-400 text-sm">&copy; <span id="year"></span> LearnTrack. All rights reserved.</p>
+        <div class="flex gap-6 text-sm text-gray-400">
+          <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+          <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+          <a href="#" class="hover:text-white transition-colors">Cookie Policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    // Set current year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Mobile menu toggle
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const closeMenu = document.getElementById('close-menu');
+
+    mobileMenuBtn.addEventListener('click', () => {
+      mobileMenu.classList.add('open');
+    });
+
+    closeMenu.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+    });
+
+    // Close mobile menu when clicking a link
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+      });
+    });
+
+    // Header scroll effect
+    const header = document.getElementById('header');
+    let lastScroll = 0;
+
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.pageYOffset;
+      
+      if (currentScroll > 50) {
+        header.classList.add('header-scrolled');
+      } else {
+        header.classList.remove('header-scrolled');
+      }
+      
+      lastScroll = currentScroll;
+    });
+
+    // Animate counters
+    const animateCounter = (el, target, duration) => {
+      let start = 0;
+      const increment = target / (duration / 16);
+      
+      const updateCounter = () => {
+        start += increment;
+        if (start < target) {
+          el.textContent = Math.floor(start).toLocaleString();
+          requestAnimationFrame(updateCounter);
+        } else {
+          el.textContent = target.toLocaleString();
+        }
+      };
+      
+      updateCounter();
+    };
+
+    // Observer for counters
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const target = parseInt(entry.target.getAttribute('data-target'));
+          animateCounter(entry.target, target, 2000);
+          counterObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('[data-target]').forEach(counter => {
+      counterObserver.observe(counter);
+    });
+
+    // Fade up animation observer
+    const fadeUpObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-up').forEach(element => {
+      fadeUpObserver.observe(element);
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if (href !== '#' && href !== '#signin' && href !== '#signup' && href !== '#all-courses') {
+          e.preventDefault();
+          const target = document.querySelector(href);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
+      });
+    });
+  </script>
+<script src="/js/landing.js"></script></body>
+</html>

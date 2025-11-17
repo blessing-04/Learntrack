@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LearnHub — Browse Courses</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/theme.css" />
+</head>
+<body class="antialiased text-gray-900 bg-white">
+  <header class="header-sticky bg-white/80" id="header">
+    <nav class="max-w-7xl mx-auto px-6 py-4">
+      <div class="flex items-center justify-between">
+        <a href="/landing.html" class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">LearnHub</a>
+        <div class="hidden md:flex items-center gap-8">
+          <a href="/auth.html" class="nav-link text-gray-700 hover:text-indigo-600 font-medium">Sign In</a>
+          <a href="/instructorDashboard.html" class="nav-link text-gray-700 hover:text-indigo-600 font-medium">Teach</a>
+        </div>
+        <button id="mobile-menu-btn" class="md:hidden p-2 hover:bg-gray-100 rounded-lg"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+      </div>
+      <div id="mobile-menu" class="mobile-menu fixed top-0 right-0 h-full w-64 bg-white shadow-2xl md:hidden p-6 z-50">
+        <button id="close-menu" class="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-lg"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+        <div class="mt-12 flex flex-col gap-4">
+          <a href="/auth.html" class="text-gray-700 hover:text-indigo-600 font-medium py-2">Sign In</a>
+          <a href="/instructorDashboard.html" class="text-gray-700 hover:text-indigo-600 font-medium py-2">Teach</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-6 py-8 space-y-6">
+    <section class="bg-gray-50 p-4 rounded-xl border">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+        <div class="col-span-2">
+          <div class="relative">
+            <input id="q" type="text" placeholder="Search courses..." class="w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"/>
+            <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          </div>
+        </div>
+        <select id="category" class="px-3 py-2 border rounded-lg"><option>All Categories</option><option>Development</option><option>Design</option><option>Business</option></select>
+        <select id="level" class="px-3 py-2 border rounded-lg"><option>All Levels</option><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select>
+      </div>
+    </section>
+
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="results">
+      <!-- Results will be listed here (static samples now) -->
+      <article class="fade-up card-hover bg-white rounded-2xl shadow border">
+        <div class="h-40 shine bg-gradient-to-br from-indigo-400 to-purple-600 flex items-center justify-center">
+          <span class="text-white text-xl font-bold">Full-Stack</span>
+        </div>
+        <div class="p-4">
+          <div class="flex items-center gap-2 text-sm mb-1"><span class="text-yellow-500"><svg class="inline-block w-4 h-4 fill-current" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> 4.9</span><span class="text-gray-500">(12,345)</span></div>
+          <h3 class="font-bold">Complete Web Development Bootcamp</h3>
+          <p class="text-sm text-gray-600 mb-3">Master HTML, CSS, JS, React, Node</p>
+          <div class="flex items-center justify-between">
+            <span class="text-indigo-600 font-bold">$49</span>
+            <a href="/courseDetail.html" class="px-3 py-2 bg-indigo-600 text-white rounded-lg text-sm">View</a>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/supabaseClient.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    const API_BASE = window.__API_BASE || 'http://localhost:5000';
+    const qEl = document.getElementById('q');
+    const catEl = document.getElementById('category');
+    const levelEl = document.getElementById('level');
+    const results = document.getElementById('results');
+
+    function getToken() {
+      return window.AuthManager ? window.AuthManager.getToken() : null;
+    }
+
+    function card(course) {
+      const price = (course.price_cents || 0) / 100;
+      const href = `/courseDetail.html?id=${encodeURIComponent(course.id)}`;
+      return `<article class="fade-up card-hover bg-white rounded-2xl shadow border">
+        <div class="h-40 shine bg-gradient-to-br from-indigo-400 to-purple-600 flex items-center justify-center">
+          <span class="text-white text-xl font-bold">${course.category || 'Course'}</span>
+        </div>
+        <div class="p-4">
+          <div class="flex items-center gap-2 text-sm mb-1"><span class="text-yellow-500"><svg class="inline-block w-4 h-4 fill-current" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> ${(course.rating||0).toFixed(1)}</span><span class="text-gray-500">(${course.rating_count||0})</span></div>
+          <h3 class="font-bold">${course.title}</h3>
+          <p class="text-sm text-gray-600 mb-3 line-clamp-2">${course.description||''}</p>
+          <div class="flex items-center justify-between">
+            <span class="text-indigo-600 font-bold">${price ? `$${price}` : 'Free'}</span>
+            <a href="${href}" class="px-3 py-2 bg-indigo-600 text-white rounded-lg text-sm">View</a>
+          </div>
+        </div>
+      </article>`;
+    }
+
+    async function load() {
+      const q = qEl.value.trim();
+      const category = catEl.value;
+      const level = levelEl.value;
+      const params = new URLSearchParams();
+      params.set('published', 'true');
+      if (q) params.set('q', q);
+      if (category && category !== 'All Categories') params.set('category', category);
+      if (level && level !== 'All Levels') params.set('level', level);
+
+      const resp = await window.apiFetch(`${API_BASE}/api/courses?${params.toString()}`);
+      const { data } = await resp.json();
+      results.innerHTML = (data && data.length)
+        ? data.map(card).join('')
+        : '<p class="text-gray-600">No courses found.</p>';
+    }
+
+    qEl.addEventListener('input', debounce(load, 300));
+    catEl.addEventListener('change', load);
+    levelEl.addEventListener('change', load);
+
+    function debounce(fn, ms){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); }; }
+
+    load();
+  </script>
+</body>
+</html>

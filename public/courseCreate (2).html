@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LearnTrack — Create Course</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/theme.css" />
+  <script src="/js/notifications.js"></script>
+</head>
+<body class="antialiased text-gray-900 bg-gray-50">
+  <header class="header-sticky bg-white" id="header">
+    <nav class="max-w-6xl mx-auto px-6 py-4">
+      <div class="flex items-center justify-between">
+        <a href="/landing.html" class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">LearnTrack</a>
+        <div class="hidden md:flex items-center gap-6">
+          <a href="/instructorDashboard.html" class="nav-link text-gray-700 hover:text-indigo-600 font-medium">Dashboard</a>
+          <a href="/courseCreate.html" class="nav-link text-indigo-600 hover:text-indigo-700 font-semibold">Create Course</a>
+          <a href="/instructorProfile.html" class="nav-link text-gray-700 hover:text-indigo-600 font-medium">Profile</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="max-w-6xl mx-auto p-6 space-y-6">
+    <section class="hero-gradient rounded-2xl p-6 text-white">
+      <h1 class="text-3xl font-bold mb-2">Create a New Course</h1>
+      <p class="text-white/90">Add course details, create sections, and upload content all in one place</p>
+    </section>
+
+    <!-- Course Basics -->
+    <section class="bg-white rounded-2xl shadow-lg p-6 border">
+      <h2 class="text-xl font-bold mb-4">1. Course Basics</h2>
+      <form id="course-form" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-semibold mb-1">Title *</label>
+            <input id="course-title" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="e.g., Advanced React Patterns"/>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold mb-1">Category *</label>
+            <select id="course-category" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500">
+              <option value="">Select category</option>
+              <option value="Development">Development</option>
+              <option value="Design">Design</option>
+              <option value="Business">Business</option>
+              <option value="Marketing">Marketing</option>
+              <option value="Data Science">Data Science</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold mb-1">Level</label>
+            <select id="course-level" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500">
+              <option value="Beginner">Beginner</option>
+              <option value="Intermediate">Intermediate</option>
+              <option value="Advanced">Advanced</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold mb-1">Language</label>
+            <input id="course-language" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="English" value="English"/>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold mb-1">Description *</label>
+          <textarea id="course-description" required rows="4" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="What will students learn?"></textarea>
+        </div>
+
+        <div class="border-t pt-4">
+          <h3 class="font-bold mb-3">Pricing</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <label class="flex items-center gap-2 p-3 border rounded-lg cursor-pointer">
+              <input id="pricing-free" type="radio" name="pricing" value="free" checked /> <span>Free</span>
+            </label>
+            <label class="flex items-center gap-2 p-3 border rounded-lg cursor-pointer">
+              <input id="pricing-paid" type="radio" name="pricing" value="paid" /> <span>Paid</span>
+            </label>
+            <input id="course-price" type="number" placeholder="R Price" disabled class="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500" min="0" step="1"/>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <!-- Course Sections -->
+    <section class="bg-white rounded-2xl shadow-lg p-6 border">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-bold">2. Course Sections & Content</h2>
+        <button id="add-section-btn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold">+ Add Section</button>
+      </div>
+      <p class="text-sm text-gray-600 mb-4">Organize your course into sections. Each section can contain videos, documents, and links.</p>
+      
+      <div id="sections-container" class="space-y-4">
+        <div class="text-center py-8 text-gray-500 border-2 border-dashed rounded-lg">
+          No sections yet. Click "+ Add Section" to create your first section.
+        </div>
+      </div>
+    </section>
+
+    <!-- Publish Buttons -->
+    <section class="bg-white rounded-2xl shadow-lg p-6 border">
+      <div class="flex justify-end gap-3">
+        <button type="button" id="save-draft-btn" class="px-6 py-3 border rounded-lg hover:bg-gray-50 font-semibold">Save Draft</button>
+        <button type="button" id="publish-btn" class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:shadow-lg font-semibold">Publish Course</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Add Section Modal -->
+  <div id="section-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4">
+      <h3 class="text-xl font-bold mb-4">Add Section</h3>
+      <input type="text" id="section-title-input" placeholder="Section Title (e.g., Introduction)" class="w-full px-4 py-2 border rounded-lg mb-4" />
+      <div class="flex justify-end gap-3">
+        <button id="cancel-section-btn" class="px-4 py-2 border rounded-lg">Cancel</button>
+        <button id="save-section-btn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold">Add Section</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Content Modal -->
+  <div id="content-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-2xl p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+      <h3 class="text-xl font-bold mb-4">Add Content to: <span id="modal-section-title" class="text-indigo-600"></span></h3>
+      
+      <div class="space-y-4">
+        <!-- Upload Video -->
+        <div class="border-2 border-dashed rounded-lg p-4 hover:border-indigo-500 transition">
+          <h4 class="font-semibold mb-2 flex items-center gap-2">
+            <span class="text-2xl">📹</span> Upload Video
+          </h4>
+          <input type="file" id="video-upload" accept="video/*" class="hidden" />
+          <button id="video-upload-btn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg w-full hover:bg-indigo-700">Choose Video File</button>
+          <p class="text-xs text-gray-500 mt-2">Max 50MB • MP4, AVI, MOV, etc.</p>
+        </div>
+
+        <!-- Upload Document -->
+        <div class="border-2 border-dashed rounded-lg p-4 hover:border-indigo-500 transition">
+          <h4 class="font-semibold mb-2 flex items-center gap-2">
+            <span class="text-2xl">📄</span> Upload Document
+          </h4>
+          <input type="file" id="doc-upload" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.xlsx" class="hidden" />
+          <button id="doc-upload-btn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg w-full hover:bg-indigo-700">Choose Document File</button>
+          <p class="text-xs text-gray-500 mt-2">Max 10MB • PDF, Word, PowerPoint, Excel, Text</p>
+        </div>
+
+        <!-- Add Link -->
+        <div class="border-2 border-dashed rounded-lg p-4 hover:border-indigo-500 transition">
+          <h4 class="font-semibold mb-2 flex items-center gap-2">
+            <span class="text-2xl">🔗</span> Add External Link
+          </h4>
+          <input type="text" id="link-title-input" placeholder="Link Title (e.g., Additional Resources)" class="w-full px-4 py-2 border rounded-lg mb-2" />
+          <input type="url" id="link-url-input" placeholder="https://example.com" class="w-full px-4 py-2 border rounded-lg mb-2" />
+          <button id="add-link-btn-modal" class="px-4 py-2 bg-indigo-600 text-white rounded-lg w-full hover:bg-indigo-700">Add Link</button>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-3 mt-6 pt-4 border-t">
+        <button id="close-content-modal-btn" class="px-4 py-2 border rounded-lg">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Course sections data structure
+    const courseSections = [];
+    let currentSectionIndex = null;
+
+    // Toggle price input
+    document.getElementById('pricing-paid').addEventListener('change', () => {
+      const priceInput = document.getElementById('course-price');
+      priceInput.disabled = false;
+      priceInput.required = true;
+      priceInput.focus();
+    });
+
+    document.getElementById('pricing-free').addEventListener('change', () => {
+      const priceInput = document.getElementById('course-price');
+      priceInput.disabled = true;
+      priceInput.required = false;
+      priceInput.value = '';
+    });
+
+    // Add section
+    document.getElementById('add-section-btn').addEventListener('click', () => {
+      document.getElementById('section-modal').classList.remove('hidden');
+      document.getElementById('section-title-input').value = '';
+      document.getElementById('section-title-input').focus();
+    });
+
+    document.getElementById('cancel-section-btn').addEventListener('click', () => {
+      document.getElementById('section-modal').classList.add('hidden');
+    });
+
+    document.getElementById('save-section-btn').addEventListener('click', () => {
+      const title = document.getElementById('section-title-input').value.trim();
+      if (!title) {
+        window.Notifications.error('Please enter a section title');
+        return;
+      }
+
+      courseSections.push({
+        title,
+        content: []
+      });
+
+      document.getElementById('section-modal').classList.add('hidden');
+      renderSections();
+    });
+
+    // Render sections
+    function renderSections() {
+      const container = document.getElementById('sections-container');
+      
+      if (courseSections.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-8 text-gray-500 border-2 border-dashed rounded-lg">
+            No sections yet. Click "+ Add Section" to create your first section.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = courseSections.map((section, idx) => `
+        <div class="border-2 rounded-lg p-4 bg-gradient-to-r from-gray-50 to-white">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-bold text-lg flex items-center gap-2">
+              <span class="bg-indigo-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">${idx + 1}</span>
+              ${section.title}
+            </h3>
+            <div class="flex gap-2">
+              <button onclick="openContentModal(${idx})" class="px-3 py-1 bg-indigo-600 text-white rounded text-sm hover:bg-indigo-700">+ Add Content</button>
+              <button onclick="deleteSection(${idx})" class="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700">Delete</button>
+            </div>
+          </div>
+          
+          <div class="space-y-2 mt-3">
+            ${section.content.length === 0 ? 
+              '<p class="text-gray-500 text-sm italic py-2">No content yet. Click "+ Add Content" to add videos, documents, or links.</p>' :
+              section.content.map((item, itemIdx) => `
+                <div class="flex items-center justify-between bg-white p-3 rounded border hover:shadow-sm transition">
+                  <div class="flex items-center gap-3">
+                    <span class="text-2xl">${item.type === 'video' ? '📹' : item.type === 'document' ? '📄' : '🔗'}</span>
+                    <div>
+                      <p class="font-medium">${item.title || item.name}</p>
+                      ${item.size ? `<p class="text-xs text-gray-500">${formatFileSize(item.size)}</p>` : ''}
+                    </div>
+                  </div>
+                  <button onclick="deleteContent(${idx}, ${itemIdx})" class="text-red-600 hover:text-red-800 px-2 py-1 text-sm">Delete</button>
+                </div>
+              `).join('')
+            }
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Open content modal
+    window.openContentModal = (sectionIdx) => {
+      currentSectionIndex = sectionIdx;
+      document.getElementById('modal-section-title').textContent = courseSections[sectionIdx].title;
+      document.getElementById('content-modal').classList.remove('hidden');
+    };
+
+    document.getElementById('close-content-modal-btn').addEventListener('click', () => {
+      document.getElementById('content-modal').classList.add('hidden');
+    });
+
+    // Video upload
+    document.getElementById('video-upload-btn').addEventListener('click', () => {
+      document.getElementById('video-upload').click();
+    });
+
+    document.getElementById('video-upload').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      courseSections[currentSectionIndex].content.push({
+        type: 'video',
+        name: file.name,
+        size: file.size,
+        file: file
+      });
+
+      renderSections();
+      e.target.value = '';
+      window.Notifications.success('Video added! You can add more content or close this modal.');
+    });
+
+    // Document upload
+    document.getElementById('doc-upload-btn').addEventListener('click', () => {
+      document.getElementById('doc-upload').click();
+    });
+
+    document.getElementById('doc-upload').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      courseSections[currentSectionIndex].content.push({
+        type: 'document',
+        name: file.name,
+        size: file.size,
+        file: file
+      });
+
+      renderSections();
+      e.target.value = '';
+      window.Notifications.success('Document added! You can add more content or close this modal.');
+    });
+
+    // Add link
+    document.getElementById('add-link-btn-modal').addEventListener('click', () => {
+      const title = document.getElementById('link-title-input').value.trim();
+      const url = document.getElementById('link-url-input').value.trim();
+
+      if (!title || !url) {
+        window.Notifications.error('Please enter both title and URL');
+        return;
+      }
+
+      courseSections[currentSectionIndex].content.push({
+        type: 'link',
+        title,
+        url
+      });
+
+      document.getElementById('link-title-input').value = '';
+      document.getElementById('link-url-input').value = '';
+      renderSections();
+      window.Notifications.success('Link added! You can add more content or close this modal.');
+    });
+
+    // Delete section
+    window.deleteSection = async (idx) => {
+      const confirmed = await window.Notifications.confirm(
+        `Delete section "${courseSections[idx].title}" and all its content?`
+      );
+      if (!confirmed) return;
+      courseSections.splice(idx, 1);
+      renderSections();
+      window.Notifications.success('Section deleted successfully');
+    };
+
+    // Delete content
+    window.deleteContent = (sectionIdx, contentIdx) => {
+      courseSections[sectionIdx].content.splice(contentIdx, 1);
+      renderSections();
+    };
+
+    // Format file size
+    function formatFileSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+
+    // Check instructor role
+    async function checkInstructorRole() {
+      try {
+        const token = sessionStorage.getItem('token');
+        if (!token) {
+          window.Notifications.error('Please sign in to create courses');
+          window.location.href = '/signIn.html';
+          return;
+        }
+
+        const resp = await fetch('/api/course-management/verify', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!resp.ok) {
+          window.Notifications.error('Access denied. Please sign in.');
+          window.location.href = '/signIn.html';
+          return;
+        }
+
+        const json = await resp.json();
+        if (json.role !== 'instructor') {
+          window.Notifications.error('Only instructors can create courses.');
+          window.location.href = '/landing.html';
+          return;
+        }
+
+        console.log('Instructor verified');
+      } catch (err) {
+        console.error('Session check error:', err);
+        window.Notifications.error('Error checking authentication.');
+        window.location.href = '/signIn.html';
+      }
+    }
+
+    // Save draft
+    document.getElementById('save-draft-btn').addEventListener('click', async () => {
+      await submitCourse(false);
+    });
+
+    // Publish
+    document.getElementById('publish-btn').addEventListener('click', async () => {
+      await submitCourse(true);
+    });
+
+    // Submit course
+    async function submitCourse(isPublished) {
+      const token = sessionStorage.getItem('token');
+      if (!token) {
+        window.Notifications.error('Please sign in');
+        window.location.href = '/signIn.html';
+        return;
+      }
+
+      const btn = isPublished ? document.getElementById('publish-btn') : document.getElementById('save-draft-btn');
+      const originalText = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = isPublished ? 'Publishing...' : 'Saving...';
+
+      try {
+        // Validate
+        const title = document.getElementById('course-title').value.trim();
+        const description = document.getElementById('course-description').value.trim();
+        const category = document.getElementById('course-category').value;
+
+        if (!title || !description || !category) {
+          throw new Error('Title, description, and category are required');
+        }
+
+        if (courseSections.length === 0) {
+          throw new Error('Please add at least one section with content');
+        }
+
+        const level = document.getElementById('course-level').value;
+        const language = document.getElementById('course-language').value;
+        const pricingType = document.querySelector('input[name="pricing"]:checked').value;
+        const priceInput = document.getElementById('course-price').value;
+
+        let price_cents = 0;
+        if (pricingType === 'paid') {
+          if (!priceInput) throw new Error('Please enter a price');
+          price_cents = parseInt(priceInput, 10) * 100;
+        }
+
+        // Create course
+        btn.textContent = 'Creating course...';
+        const courseData = {
+          title,
+          description,
+          category,
+          level,
+          language,
+          price_cents,
+          is_published: isPublished
+        };
+
+        const response = await fetch('/api/course-management/create', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(courseData)
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Failed to create course');
+
+        const courseId = data.data.id;
+        console.log('Course created:', courseId);
+
+        // Create sections and upload content
+        for (let i = 0; i < courseSections.length; i++) {
+          const section = courseSections[i];
+          btn.textContent = `Creating section ${i + 1}/${courseSections.length}...`;
+
+          // Create section
+          const sectionResp = await fetch(`/api/course-management/${courseId}/sections`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ title: section.title, position: i })
+          });
+
+          const sectionData = await sectionResp.json();
+          if (!sectionResp.ok) {
+            console.error('Failed to create section:', section.title);
+            continue;
+          }
+
+          const sectionId = sectionData.data.id;
+
+          // Upload content for this section
+          for (let j = 0; j < section.content.length; j++) {
+            const content = section.content[j];
+            btn.textContent = `Uploading content ${j + 1}/${section.content.length} in section ${i + 1}...`;
+
+            if (content.type === 'video' || content.type === 'document') {
+              // Upload file
+              const formData = new FormData();
+              formData.append('file', content.file);
+              formData.append('fileType', content.type);
+
+              const uploadResp = await fetch(`/api/course-management/${courseId}/upload-file`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` },
+                body: formData
+              });
+
+              if (uploadResp.ok) {
+                const { file: uploadedFile } = await uploadResp.json();
+
+                // Create lesson with file URL
+                await fetch(`/api/course-management/${courseId}/sections/${sectionId}/lessons`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                  },
+                  body: JSON.stringify({
+                    title: content.name,
+                    video_url: content.type === 'video' ? uploadedFile.url : null,
+                    resource_urls: content.type === 'document' ? [uploadedFile.url] : [],
+                    position: j
+                  })
+                });
+
+                console.log(`[✓] Uploaded ${content.type}: ${content.name}`);
+              } else {
+                console.error(`[✗] Failed to upload ${content.type}: ${content.name}`);
+              }
+            } else if (content.type === 'link') {
+              // Create lesson with link
+              await fetch(`/api/course-management/${courseId}/sections/${sectionId}/lessons`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                  title: content.title,
+                  resource_urls: [content.url],
+                  position: j
+                })
+              });
+
+              console.log(`[✓] Added link: ${content.title}`);
+            }
+          }
+        }
+
+        btn.textContent = 'Success!';
+        window.Notifications.success(`Course ${isPublished ? 'published' : 'saved as draft'} successfully! Sections: ${courseSections.length}, Content items: ${courseSections.reduce((sum, s) => sum + s.content.length, 0)}`);
+        setTimeout(() => {
+          window.location.href = '/instructorDashboard.html';
+        }, 1500);
+
+      } catch (err) {
+        console.error('Error:', err);
+        window.Notifications.error(err.message || 'Failed to create course');
+        btn.disabled = false;
+        btn.textContent = originalText;
+      }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      checkInstructorRole();
+      renderSections();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard | LearnHub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/theme.css" />
+  <script src="/js/notifications.js"></script>
+  <script src="https://js.stripe.com/v3/"></script>
+  <style>
+    /* Ensure hero gradient works properly */
+    .hero-gradient {
+      background: linear-gradient(135deg, rgba(99,102,241,0.95), rgba(168,85,247,0.9) 50%, rgba(236,72,153,0.85) 100%) !important;
+      background-size: 200% 200% !important;
+      animation: gradientShift 15s ease infinite !important;
+    }
+    
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+  </style>
+</head>
+<body class="antialiased text-gray-900 bg-gray-50">
+  <!-- HEADER -->
+  <header class="header-sticky bg-white">
+    <nav class="max-w-7xl mx-auto px-6 py-4">
+      <div class="flex items-center justify-between">
+        <a href="/landing.html" class="text-2xl font-bold">
+          <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">LearnTrack</span>
+        </a>
+        <div class="flex items-center gap-4">
+          <button id="profile-btn" class="flex items-center gap-2 hover:bg-gray-100 rounded-lg px-3 py-2">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-sm" id="user-avatar">U</div>
+            <span id="header-user-name" class="hidden md:block font-medium text-gray-700"></span>
+          </button>
+          <button id="signout" class="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold">Sign out</button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-7xl mx-auto p-6 space-y-6">
+    <!-- Welcome Banner -->
+    <section class="hero-gradient rounded-2xl p-8 text-white">
+      <h1 class="text-3xl font-bold mb-2">Welcome back, <span id="user-name">Student</span>! 👋</h1>
+      <p class="text-white/90 mb-6">Continue your learning journey and explore new courses</p>
+      <div class="flex flex-wrap gap-4">
+        <div class="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2">
+          <p class="text-sm text-white/80">Enrolled Courses</p>
+          <p id="stat-enrolled" class="text-2xl font-bold">0</p>
+        </div>
+        <div class="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2">
+          <p class="text-sm text-white/80">Available Courses</p>
+          <p id="stat-available" class="text-2xl font-bold">0</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- My Certificates -->
+    <section class="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl shadow-lg p-6 border-2 border-yellow-300">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-3">
+          <svg class="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+          </svg>
+          <h2 class="text-2xl font-bold text-gray-900">My Certificates</h2>
+        </div>
+        <span id="cert-count-badge" class="hidden px-3 py-1 bg-yellow-500 text-white rounded-full text-sm font-bold">0</span>
+      </div>
+      <div id="certificates-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="col-span-full text-center py-8 text-gray-500">Loading certificates...</div>
+      </div>
+    </section>
+
+    <!-- My Enrolled Courses -->
+    <section class="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
+      <h2 class="text-2xl font-bold mb-4">My Enrolled Courses</h2>
+      <div id="enrolled-courses-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="col-span-full text-center py-8 text-gray-500">Loading enrolled courses...</div>
+      </div>
+    </section>
+
+    <!-- All Available Courses -->
+    <section class="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
+      <h2 class="text-2xl font-bold mb-4">Available Courses</h2>
+      <p class="text-gray-600 mb-4">Browse and enroll in courses created by our instructors</p>
+      <div id="available-courses-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="col-span-full text-center py-8 text-gray-500">Loading available courses...</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Profile Modal -->
+  <div id="profile-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col">
+      <!-- Fixed Header -->
+      <div class="p-6 border-b border-gray-200 flex items-center justify-between bg-white rounded-t-2xl flex-shrink-0">
+        <h2 class="text-2xl font-bold">My Profile</h2>
+        <button id="close-profile-btn" class="p-2 hover:bg-gray-100 rounded-lg">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      
+      <!-- Scrollable Content -->
+      <div class="p-6 overflow-y-auto flex-1">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Left Column - Profile Info -->
+          <div class="lg:col-span-2 space-y-6">
+            <!-- Profile Photo & Basic Info -->
+            <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-6">
+              <div class="flex items-start gap-4">
+                <div class="w-24 h-24 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white text-4xl font-bold shadow-lg" id="profile-avatar">
+                  U
+                </div>
+                <div class="flex-1">
+                  <h3 id="profile-name" class="text-2xl font-bold text-gray-900 mb-1">User</h3>
+                  <p id="profile-email" class="text-sm text-gray-600 mb-3">email@example.com</p>
+                  <span class="inline-block px-3 py-1 bg-indigo-600 text-white text-xs font-semibold rounded-full">Learner</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Edit Profile Form -->
+            <div class="bg-white border border-gray-200 rounded-xl p-6">
+              <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+                Personal Information
+              </h3>
+              <form id="profile-form" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-sm font-semibold mb-2">Full Name</label>
+                    <input type="text" id="edit-name" placeholder="Enter your full name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-semibold mb-2">Username / Display Name</label>
+                    <input type="text" id="edit-username" placeholder="Enter display name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" />
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-semibold mb-2">Email Address</label>
+                  <input type="email" id="edit-email" readonly class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-600 cursor-not-allowed" />
+                  <p class="text-xs text-gray-500 mt-1">Email cannot be changed for security reasons</p>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-semibold mb-2">Bio / About Me</label>
+                  <textarea id="edit-bio" rows="3" placeholder="Tell us a bit about yourself..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 resize-none"></textarea>
+                </div>
+
+                <button type="submit" class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all">
+                  Save Profile Changes
+                </button>
+              </form>
+            </div>
+
+            <!-- Change Password -->
+            <div class="bg-white border border-gray-200 rounded-xl p-6">
+              <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+                Security Settings
+              </h3>
+              <form id="password-form" class="space-y-4">
+                <div>
+                  <label class="block text-sm font-semibold mb-2">New Password</label>
+                  <input type="password" id="new-password" placeholder="Enter new password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" required minlength="6" />
+                </div>
+
+                <div>
+                  <label class="block text-sm font-semibold mb-2">Confirm New Password</label>
+                  <input type="password" id="confirm-password" placeholder="Confirm new password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" required minlength="6" />
+                </div>
+
+                <button type="submit" class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all">
+                  Update Password
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Right Column - Stats & Settings -->
+          <div class="space-y-6">
+            <!-- Learning Stats -->
+            <div class="bg-white border border-gray-200 rounded-xl p-6">
+              <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+                Learning Stats
+              </h3>
+              <div class="space-y-3">
+                <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg p-4">
+                  <p class="text-sm text-gray-600">Total Learning Hours</p>
+                  <p id="stat-learning-hours" class="text-2xl font-bold text-indigo-600">0 hrs</p>
+                </div>
+                <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg p-4">
+                  <p class="text-sm text-gray-600">Completed Courses</p>
+                  <p id="stat-completed-courses" class="text-2xl font-bold text-blue-600">0</p>
+                </div>
+                <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-4">
+                  <p class="text-sm text-gray-600">Enrolled Courses</p>
+                  <p id="stat-enrolled-courses" class="text-2xl font-bold text-purple-600">0</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="bg-white border border-gray-200 rounded-xl p-6">
+              <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                Recent Activity
+              </h3>
+              <div class="space-y-3 text-sm">
+                <div class="flex items-start gap-2">
+                  <div class="w-2 h-2 bg-green-500 rounded-full mt-1.5"></div>
+                  <div>
+                    <p class="font-medium text-gray-900">Last Login</p>
+                    <p id="last-login" class="text-gray-600">Just now</p>
+                  </div>
+                </div>
+                <div class="flex items-start gap-2">
+                  <div class="w-2 h-2 bg-blue-500 rounded-full mt-1.5"></div>
+                  <div>
+                    <p class="font-medium text-gray-900">Last Accessed Course</p>
+                    <p id="last-course" class="text-gray-600">No courses yet</p>
+                  </div>
+                </div>
+                <div class="flex items-start gap-2">
+                  <div class="w-2 h-2 bg-purple-500 rounded-full mt-1.5"></div>
+                  <div>
+                    <p class="font-medium text-gray-900">Member Since</p>
+                    <p id="member-since" class="text-gray-600">-</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/supabaseClient.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    let currentUserId = null;
+    let currentUserData = null;
+
+    // Sign out handler
+    document.getElementById('signout')?.addEventListener('click', async () => {
+      try {
+        sessionStorage.clear();
+        if (window.supabase) {
+          await window.supabase.auth.signOut();
+        }
+        window.location.href = '/landing.html';
+      } catch (err) {
+        console.error('Sign out error:', err);
+        sessionStorage.clear();
+        window.location.href = '/landing.html';
+      }
+    });
+
+    // Check authentication and load user profile
+    async function checkAuth() {
+      try {
+        const token = sessionStorage.getItem('token');
+        if (!token) {
+          window.location.href = '/signIn.html';
+          return;
+        }
+
+        // Fetch user profile from backend API
+        const profileResponse = await fetch('/api/profiles/me', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!profileResponse.ok) {
+          throw new Error('Failed to fetch profile');
+        }
+
+        const { data: profile } = await profileResponse.json();
+        currentUserId = profile.id;
+        currentUserData = profile;
+
+        const userName = profile.name || 'Student';
+        const userEmail = profile.email || '';
+        const userInitial = userName.charAt(0).toUpperCase();
+        
+        // Update welcome message
+        document.getElementById('user-name').textContent = userName;
+        
+        // Update header
+        document.getElementById('header-user-name').textContent = userName;
+        document.getElementById('user-avatar').textContent = userInitial;
+        
+        // Update profile modal
+        document.getElementById('profile-name').textContent = userName;
+        document.getElementById('profile-email').textContent = userEmail;
+        document.getElementById('profile-avatar').textContent = userInitial;
+        
+        // Update profile form fields
+        document.getElementById('edit-name').value = userName;
+        document.getElementById('edit-username').value = profile.username || userName;
+        document.getElementById('edit-email').value = userEmail;
+        document.getElementById('edit-bio').value = profile.bio || '';
+        
+        // Update member since
+        const memberSince = new Date(profile.created_at).toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        });
+        document.getElementById('member-since').textContent = memberSince;
+        
+        // Update last login
+        document.getElementById('last-login').textContent = 'Just now';
+
+        // Update statistics from backend
+        if (profile.stats) {
+          document.getElementById('stat-enrolled-courses').textContent = profile.stats.enrolled_courses;
+          document.getElementById('stat-completed-courses').textContent = profile.stats.completed_courses;
+          document.getElementById('stat-learning-hours').textContent = `${profile.stats.learning_hours} hrs`;
+          document.getElementById('last-course').textContent = profile.stats.last_accessed_course;
+        }
+
+        await loadDashboard();
+      } catch (err) {
+        console.error('Auth check error:', err);
+        window.location.href = '/signIn.html';
+      }
+    }
+
+    // Load profile stats from backend
+    async function loadProfileStats() {
+      try {
+        const token = sessionStorage.getItem('token');
+        
+        // Fetch updated profile data from backend
+        const profileResponse = await fetch('/api/profiles/me', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        if (profileResponse.ok) {
+          const { data: profile } = await profileResponse.json();
+          
+          // Update statistics
+          if (profile.stats) {
+            document.getElementById('stat-enrolled-courses').textContent = profile.stats.enrolled_courses;
+            document.getElementById('stat-completed-courses').textContent = profile.stats.completed_courses;
+            document.getElementById('stat-learning-hours').textContent = `${profile.stats.learning_hours} hrs`;
+            document.getElementById('last-course').textContent = profile.stats.last_accessed_course;
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load profile stats:', err);
+      }
+    }
+
+    // Profile modal handlers
+    document.getElementById('profile-btn').addEventListener('click', async () => {
+      document.getElementById('profile-modal').classList.remove('hidden');
+      await loadProfileStats();
+    });
+
+    document.getElementById('close-profile-btn').addEventListener('click', () => {
+      document.getElementById('profile-modal').classList.add('hidden');
+    });
+
+    // Close on background click
+    document.getElementById('profile-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'profile-modal') {
+        document.getElementById('profile-modal').classList.add('hidden');
+      }
+    });
+
+    // Password change handler
+    document.getElementById('password-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const newPassword = document.getElementById('new-password').value;
+      const confirmPassword = document.getElementById('confirm-password').value;
+
+      if (newPassword !== confirmPassword) {
+        window.Notifications.error('Passwords do not match!');
+        return;
+      }
+
+      if (newPassword.length < 6) {
+        window.Notifications.error('Password must be at least 6 characters long');
+        return;
+      }
+
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const originalText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Updating...';
+
+      try {
+        const token = sessionStorage.getItem('token');
+        
+        if (!token) {
+          throw new Error('Not authenticated. Please sign in again.');
+        }
+
+        // Check if Supabase client is available
+        if (!window.supabase) {
+          throw new Error('Supabase client not loaded. Please refresh the page.');
+        }
+
+        // Set the session with the token
+        const { data: sessionData, error: sessionError } = await window.supabase.auth.setSession({
+          access_token: token,
+          refresh_token: token
+        });
+
+        if (sessionError) {
+          console.warn('Session error:', sessionError);
+        }
+
+        // Update password
+        const { error } = await window.supabase.auth.updateUser({
+          password: newPassword
+        });
+
+        if (error) {
+          console.error('Supabase password update error:', error);
+          throw new Error(error.message || 'Failed to update password');
+        }
+
+        window.Notifications.success('Password updated successfully!');
+        document.getElementById('password-form').reset();
+        document.getElementById('profile-modal').classList.add('hidden');
+      } catch (err) {
+        console.error('Password update error:', err);
+        window.Notifications.error('Failed to update password: ' + (err.message || 'Unknown error'));
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    });
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.getElementById('profile-modal').classList.add('hidden');
+      }
+    });
+
+    // Profile form submission
+    document.getElementById('profile-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('edit-name').value.trim();
+      const username = document.getElementById('edit-username').value.trim();
+      const bio = document.getElementById('edit-bio').value.trim();
+
+      if (!name) {
+        window.Notifications.error('Full name is required');
+        return;
+      }
+
+      try {
+        const token = sessionStorage.getItem('token');
+
+        // Update profile via backend API
+        const response = await fetch('/api/profiles/me', {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ name, username, bio })
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to update profile');
+        }
+
+        const { data: profile } = await response.json();
+
+        // Update UI with new data
+        document.getElementById('user-name').textContent = profile.name;
+        document.getElementById('header-user-name').textContent = profile.name;
+        document.getElementById('profile-name').textContent = profile.name;
+        
+        const userInitial = profile.name.charAt(0).toUpperCase();
+        document.getElementById('user-avatar').textContent = userInitial;
+        document.getElementById('profile-avatar').textContent = userInitial;
+
+        window.Notifications.success('Profile updated successfully!');
+      } catch (err) {
+        console.error('Profile update error:', err);
+        window.Notifications.error('Failed to update profile: ' + err.message);
+      }
+    });
+
+    // Load dashboard data
+    async function loadDashboard() {
+      try {
+        const token = sessionStorage.getItem('token');
+
+        // Load certificates
+        await loadCertificates(token);
+
+        // Load enrolled courses
+        await loadEnrolledCourses(token);
+
+        // Load available courses
+        await loadAvailableCourses(token);
+
+      } catch (err) {
+        console.error('Failed to load dashboard:', err);
+      }
+    }
+
+    // Load certificates
+    async function loadCertificates(token) {
+      try {
+        const response = await fetch('/api/certificates/my-certificates', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        const container = document.getElementById('certificates-container');
+
+        if (!response.ok) {
+          container.innerHTML = `<div class="col-span-full text-center py-8 text-gray-500">
+            <svg class="w-16 h-16 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+            </svg>
+            No certificates earned yet. Complete a course to earn your first certificate!
+          </div>`;
+          return;
+        }
+
+        const { data: certificates } = await response.json();
+
+        if (!certificates || certificates.length === 0) {
+          container.innerHTML = `<div class="col-span-full text-center py-8 text-gray-500">
+            <svg class="w-16 h-16 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+            </svg>
+            No certificates earned yet. Complete a course to earn your first certificate!
+          </div>`;
+          return;
+        }
+
+        // Show certificate count badge
+        document.getElementById('cert-count-badge').classList.remove('hidden');
+        document.getElementById('cert-count-badge').textContent = certificates.length;
+
+        // Render certificates
+        container.innerHTML = certificates.map(cert => {
+          const issueDate = new Date(cert.issued_at).toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric' 
+          });
+
+          return `
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all border-2 border-yellow-300">
+              <div class="bg-gradient-to-br from-yellow-400 to-orange-500 p-4 text-white">
+                <div class="flex items-center justify-between mb-2">
+                  <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                  </svg>
+                  <span class="text-xs font-semibold bg-white/20 px-2 py-1 rounded">VERIFIED</span>
+                </div>
+                <h3 class="text-lg font-bold leading-tight">${cert.courses.title}</h3>
+              </div>
+              
+              <div class="p-4">
+                <div class="mb-3">
+                  <div class="text-xs text-gray-500 mb-1">Certificate ID</div>
+                  <div class="text-sm font-mono text-gray-800">${cert.certificate_number}</div>
+                </div>
+                
+                <div class="flex items-center justify-between mb-3">
+                  <div>
+                    <div class="text-xs text-gray-500">Final Score</div>
+                    <div class="text-2xl font-bold text-green-600">${cert.final_score?.toFixed(1) || '100'}%</div>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-xs text-gray-500">Issued</div>
+                    <div class="text-sm font-semibold text-gray-800">${issueDate}</div>
+                  </div>
+                </div>
+
+                <div class="flex gap-2">
+                  <a href="/certificate.html?id=${cert.id}" class="flex-1 px-3 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-sm font-semibold rounded-lg hover:from-purple-700 hover:to-blue-700 text-center">
+                    View Certificate
+                  </a>
+                  <button onclick="shareCertificate('${cert.id}')" class="px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+      } catch (err) {
+        console.error('Failed to load certificates:', err);
+        document.getElementById('certificates-container').innerHTML = `
+          <div class="col-span-full text-center py-8 text-gray-500">
+            Failed to load certificates
+          </div>
+        `;
+      }
+    }
+
+    // Share certificate
+    window.shareCertificate = function(certId) {
+      const url = `${window.location.origin}/certificate.html?id=${certId}`;
+      
+      if (navigator.share) {
+        navigator.share({
+          title: 'My LearnTrack Certificate',
+          text: 'Check out my certificate from LearnTrack Academy!',
+          url: url
+        }).catch(err => console.log('Share cancelled'));
+      } else {
+        // Fallback: Copy to clipboard
+        navigator.clipboard.writeText(url).then(() => {
+          window.Notifications.success('Certificate link copied to clipboard!');
+        });
+      }
+    }
+
+    // Load enrolled courses
+    async function loadEnrolledCourses(token) {
+      try {
+        const response = await fetch('/api/enrollments/my-courses', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        const container = document.getElementById('enrolled-courses-container');
+
+        if (!response.ok) {
+          container.innerHTML = '<div class="col-span-full text-center py-8 text-gray-500">No enrolled courses yet</div>';
+          document.getElementById('stat-enrolled').textContent = '0';
+          return;
+        }
+
+        const { data: enrollments } = await response.json();
+        console.log('Enrolled courses:', enrollments);
+
+        document.getElementById('stat-enrolled').textContent = enrollments.length;
+
+        if (enrollments.length === 0) {
+          container.innerHTML = `
+            <div class="col-span-full text-center py-12">
+              <p class="text-gray-500 mb-4">You haven't enrolled in any courses yet.</p>
+              <a href="/browse.html" class="inline-block px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold">
+                Browse Courses
+              </a>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = enrollments.map((enrollment, index) => {
+          const course = enrollment.course || enrollment;
+          const gradients = [
+            'from-indigo-400 to-purple-600',
+            'from-blue-400 to-blue-600',
+            'from-pink-400 to-rose-600',
+            'from-green-400 to-emerald-600'
+          ];
+          const gradient = gradients[index % gradients.length];
+          const price = course.price_cents > 0 ? `R${(course.price_cents / 100).toFixed(2)}` : 'Free';
+
+          return `
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden card-hover border border-gray-200">
+              <div class="h-40 bg-gradient-to-br ${gradient} flex items-center justify-center text-white text-2xl font-bold">
+                ${course.title?.substring(0, 2).toUpperCase() || 'C'}
+              </div>
+              <div class="p-4">
+                <h3 class="font-bold mb-2 line-clamp-1" title="${course.title}">${course.title}</h3>
+                <p class="text-sm text-gray-600 mb-3">${course.category} • ${course.level}</p>
+                <div class="flex items-center justify-between">
+                  <span class="text-indigo-600 font-bold">${price}</span>
+                  <a href="/courseView.html?id=${course.id}" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-semibold">
+                    Continue Learning
+                  </a>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+      } catch (err) {
+        console.error('Failed to load enrolled courses:', err);
+        document.getElementById('enrolled-courses-container').innerHTML = `
+          <div class="col-span-full text-center py-8 text-gray-500">
+            Failed to load enrolled courses
+          </div>
+        `;
+      }
+    }
+
+    // Load all available courses
+    async function loadAvailableCourses(token) {
+      try {
+        const response = await fetch('/api/courses', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        const container = document.getElementById('available-courses-container');
+
+        if (!response.ok) {
+          container.innerHTML = '<div class="col-span-full text-center py-8 text-red-500">Failed to load courses</div>';
+          return;
+        }
+
+        const { data: courses } = await response.json();
+        console.log('Available courses:', courses);
+
+        // Filter only published courses
+        const publishedCourses = courses.filter(c => c.is_published);
+
+        document.getElementById('stat-available').textContent = publishedCourses.length;
+
+        if (publishedCourses.length === 0) {
+          container.innerHTML = `
+            <div class="col-span-full text-center py-12">
+              <p class="text-gray-500">No courses available at the moment. Check back soon!</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = publishedCourses.map((course, index) => {
+          const gradients = [
+            'from-indigo-400 to-purple-600',
+            'from-blue-400 to-blue-600',
+            'from-pink-400 to-rose-600',
+            'from-green-400 to-emerald-600',
+            'from-orange-400 to-red-600',
+            'from-yellow-400 to-orange-600'
+          ];
+          const gradient = gradients[index % gradients.length];
+          const price = course.price_cents > 0 ? `R${(course.price_cents / 100).toFixed(2)}` : 'Free';
+          const rating = course.rating > 0 ? course.rating.toFixed(1) : 'New';
+          const ratingCount = course.rating_count > 0 ? `(${course.rating_count})` : '';
+
+          return `
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden card-hover border border-gray-200">
+              <div class="h-40 bg-gradient-to-br ${gradient} flex items-center justify-center text-white text-2xl font-bold">
+                ${course.title.substring(0, 2).toUpperCase()}
+              </div>
+              <div class="p-4">
+                ${course.rating > 0 ? `
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="text-yellow-500 text-sm"><svg class="inline-block w-4 h-4 fill-current" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> ${rating}</span>
+                    <span class="text-gray-500 text-sm">${ratingCount}</span>
+                  </div>
+                ` : '<div class="mb-2 text-sm text-gray-500"><svg class="inline-block w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> New Course</div>'}
+                <h3 class="font-bold mb-2 line-clamp-1" title="${course.title}">${course.title}</h3>
+                <p class="text-sm text-gray-600 mb-3 line-clamp-2">${course.description || 'No description'}</p>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs text-gray-500">${course.category}</span>
+                  <span class="text-xs text-gray-500">${course.level}</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-indigo-600 font-bold text-lg">${price}</span>
+                  <button onclick="enrollCourse('${course.id}')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-semibold">
+                    Enroll Now
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+      } catch (err) {
+        console.error('Failed to load available courses:', err);
+        document.getElementById('available-courses-container').innerHTML = `
+          <div class="col-span-full text-center py-8 text-red-500">
+            Failed to load courses
+          </div>
+        `;
+      }
+    }
+
+    // Enroll in course
+    window.enrollCourse = async (courseId) => {
+      try {
+        const token = sessionStorage.getItem('token');
+        const email = sessionStorage.getItem('email') || sessionStorage.getItem('user_email');
+        const userId = sessionStorage.getItem('user_id');
+        
+        // First, get course details to check if it's paid
+        const courseResponse = await fetch(`/api/courses/${courseId}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!courseResponse.ok) {
+          throw new Error('Failed to get course details');
+        }
+
+        const { data: course } = await courseResponse.json();
+
+        // Check if course is paid
+        if (course.price_cents > 0) {
+          console.log('💳 Paid course, initiating Stripe payment...');
+          
+          // Create Stripe payment session
+          const paymentResponse = await fetch('/api/enrollments/create-payment', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ 
+              courseId: courseId,
+              email: email,
+              userId: userId
+            })
+          });
+
+          if (!paymentResponse.ok) {
+            const error = await paymentResponse.json();
+            throw new Error(error.error || 'Failed to create payment session');
+          }
+
+          const { sessionId, publishableKey } = await paymentResponse.json();
+          
+          // Initialize Stripe and redirect to checkout
+          const stripe = Stripe(publishableKey);
+          const result = await stripe.redirectToCheckout({ sessionId });
+
+          if (result.error) {
+            throw new Error(result.error.message);
+          }
+          
+          return;
+        }
+
+        // Free course - enroll directly
+        const response = await fetch('/api/enrollments/enroll', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ course_id: courseId })
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || 'Failed to enroll');
+        }
+
+        window.Notifications.success('Successfully enrolled in free course!');
+        
+        // Reload dashboard to show new enrollment
+        await loadDashboard();
+
+      } catch (err) {
+        console.error('Enrollment error:', err);
+        if (err.message.includes('already enrolled')) {
+          window.Notifications.warning('You are already enrolled in this course');
+        } else {
+          window.Notifications.error('Failed to enroll: ' + err.message);
+        }
+      }
+    };
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', checkAuth);
+  </script>
+</body>
+</html>
