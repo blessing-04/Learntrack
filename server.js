@@ -11,6 +11,9 @@ const enrollmentsRouter = require('./routes/enrollments');
 const profilesRouter = require('./routes/profiles');
 const paymentsRouter = require('./routes/payments');
 const courseManagementRouter = require('./routes/courseManagement');
+const quizzesRouter = require('./routes/quizzes');
+const examsRouter = require('./routes/exams');
+const adminRouter = require('./routes/admin');
 
 const app = express();
 
@@ -33,6 +36,10 @@ app.use('/api/enrollments', enrollmentsRouter);
 app.use('/api/profiles', profilesRouter);
 app.use('/api/payments', paymentsRouter);
 app.use('/api/course-management', courseManagementRouter);
+app.use('/api/quizzes', quizzesRouter);
+app.use('/api/exams', examsRouter);
+app.use('/api/certificates', require('./routes/certificates'));
+app.use('/api/admin', adminRouter);
 
 app.use((req, res) => {
   // If the request is for an API path, return JSON 404; otherwise serve 404 page
