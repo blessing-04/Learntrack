@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Create Exam — LearnTrack</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/theme.css" />
+  <script src="/js/notifications.js"></script>
+  <script src="/js/auth-helper.js"></script>
+</head>
+<body class="antialiased text-gray-900 bg-gray-50">
+  <!-- Header -->
+  <header class="header-sticky bg-white" id="header">
+    <nav class="max-w-7xl mx-auto px-6 py-4">
+      <div class="flex items-center justify-between">
+        <a href="/landing.html" class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">LearnTrack</a>
+        <div class="flex items-center gap-4">
+          <a href="/instructorDashboard.html" class="text-gray-700 hover:text-indigo-600 font-medium">Dashboard</a>
+          <button id="signout" class="px-4 py-2 rounded-lg bg-indigo-600 text-white font-semibold">Sign Out</button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="max-w-5xl mx-auto p-6">
+    <!-- Progress Steps -->
+    <div class="mb-8">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <div id="step-1-indicator" class="flex items-center justify-center w-10 h-10 rounded-full bg-indigo-600 text-white font-bold">1</div>
+          <span id="step-1-text" class="font-semibold text-indigo-600">Exam Details</span>
+        </div>
+        <div class="flex-1 h-1 mx-4 bg-gray-200"></div>
+        <div class="flex items-center gap-2">
+          <div id="step-2-indicator" class="flex items-center justify-center w-10 h-10 rounded-full bg-gray-300 text-gray-600 font-bold">2</div>
+          <span id="step-2-text" class="font-semibold text-gray-500">Add Questions</span>
+        </div>
+        <div class="flex-1 h-1 mx-4 bg-gray-200"></div>
+        <div class="flex items-center gap-2">
+          <div id="step-3-indicator" class="flex items-center justify-center w-10 h-10 rounded-full bg-gray-300 text-gray-600 font-bold">3</div>
+          <span id="step-3-text" class="font-semibold text-gray-500">Review & Publish</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 1: Exam Details -->
+    <section id="step-1" class="bg-white rounded-2xl shadow-lg p-8">
+      <h2 class="text-2xl font-bold mb-6">Step 1: Exam Details</h2>
+      
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-semibold mb-2">Exam Title *</label>
+          <input type="text" id="exam-title" placeholder="e.g., Final Exam - JavaScript Fundamentals" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" required />
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold mb-2">Description</label>
+          <textarea id="exam-description" rows="3" placeholder="Brief description of what this exam covers" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 resize-none"></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-semibold mb-2">Exam Type *</label>
+            <select id="exam-type" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500">
+              <option value="final">Final Exam (Certificate)</option>
+              <option value="midterm">Midterm Exam</option>
+              <option value="practice">Practice Exam</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold mb-2">Passing Score (%) *</label>
+            <input type="number" id="passing-score" value="75" min="0" max="100" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-semibold mb-2">Time Limit (minutes)</label>
+            <input type="number" id="time-limit" placeholder="Leave empty for no limit" min="1" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" />
+          </div>
+
+          <div>
+            <label class="flex items-center gap-2 h-full">
+              <input type="checkbox" id="allow-retakes" checked class="w-5 h-5" />
+              <span class="font-semibold">Allow students to retake this exam</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-sm text-yellow-800">
+          <strong>Note:</strong> For <strong>Final Exams</strong>, students who score above the passing percentage will automatically receive a course completion certificate.
+        </div>
+      </div>
+
+      <div class="flex justify-end mt-8">
+        <button id="next-to-step-2" class="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700">
+          Next: Add Questions →
+        </button>
+      </div>
+    </section>
+
+    <!-- Step 2: Add Questions -->
+    <section id="step-2" class="hidden bg-white rounded-2xl shadow-lg p-8">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="text-2xl font-bold">Step 2: Add Questions</h2>
+          <div class="text-sm text-gray-600 mt-1">
+            <span id="question-count" class="font-bold text-indigo-600">0</span> questions added
+            • <span id="total-points" class="font-bold text-green-600">0</span> points total
+          </div>
+        </div>
+        
+        <!-- CSV Import Buttons -->
+        <div class="flex gap-3">
+          <button id="download-template-btn" class="px-4 py-2 border-2 border-green-600 text-green-600 rounded-lg font-semibold hover:bg-green-50 flex items-center gap-2 text-sm">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
+            </svg>
+            Download Template
+          </button>
+          <button id="import-csv-btn" class="px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 flex items-center gap-2 text-sm">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+            </svg>
+            Import from CSV
+          </button>
+          <input type="file" id="csv-file-input" accept=".csv" class="hidden" />
+        </div>
+      </div>
+
+      <!-- Question Form -->
+      <div class="border-2 border-indigo-200 rounded-lg p-6 mb-6 bg-indigo-50">
+        <h3 class="font-bold text-lg mb-4">Add New Question</h3>
+        
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-semibold mb-2">Question *</label>
+            <textarea id="new-question-text" rows="3" placeholder="Enter your question here" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 resize-none"></textarea>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <input type="text" id="new-option-a" placeholder="Option A" class="px-4 py-3 border rounded-lg" />
+            <input type="text" id="new-option-b" placeholder="Option B" class="px-4 py-3 border rounded-lg" />
+            <input type="text" id="new-option-c" placeholder="Option C" class="px-4 py-3 border rounded-lg" />
+            <input type="text" id="new-option-d" placeholder="Option D" class="px-4 py-3 border rounded-lg" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold mb-2">Correct Answer *</label>
+              <select id="new-correct-answer" class="w-full px-4 py-3 border rounded-lg">
+                <option value="">Select correct answer</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold mb-2">Points *</label>
+              <input type="number" id="new-points" value="10" min="1" class="w-full px-4 py-3 border rounded-lg" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold mb-2">Explanation (Optional)</label>
+            <input type="text" id="new-explanation" placeholder="Why is this the correct answer?" class="w-full px-4 py-3 border rounded-lg" />
+          </div>
+
+          <button id="add-question-btn" class="w-full px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700">
+            + Add Question to Exam
+          </button>
+        </div>
+      </div>
+
+      <!-- Questions List -->
+      <div id="questions-list" class="space-y-3 mb-6">
+        <div class="text-center py-8 text-gray-500">No questions added yet. Add your first question above!</div>
+      </div>
+
+      <div class="flex justify-between mt-8">
+        <button id="back-to-step-1" class="px-8 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50">
+          ← Back
+        </button>
+        <button id="next-to-step-3" class="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700" disabled>
+          Next: Review →
+        </button>
+      </div>
+    </section>
+
+    <!-- Step 3: Review & Publish -->
+    <section id="step-3" class="hidden bg-white rounded-2xl shadow-lg p-8">
+      <h2 class="text-2xl font-bold mb-6">Step 3: Review & Publish</h2>
+
+      <!-- Exam Summary -->
+      <div class="bg-gradient-to-r from-indigo-50 to-purple-50 border-2 border-indigo-200 rounded-lg p-6 mb-6">
+        <h3 class="font-bold text-lg mb-4">Exam Summary</h3>
+        <div class="grid grid-cols-2 gap-4 text-sm">
+          <div>
+            <span class="text-gray-600">Title:</span>
+            <span id="review-title" class="font-semibold ml-2"></span>
+          </div>
+          <div>
+            <span class="text-gray-600">Type:</span>
+            <span id="review-type" class="font-semibold ml-2"></span>
+          </div>
+          <div>
+            <span class="text-gray-600">Questions:</span>
+            <span id="review-question-count" class="font-semibold ml-2"></span>
+          </div>
+          <div>
+            <span class="text-gray-600">Total Points:</span>
+            <span id="review-total-points" class="font-semibold ml-2"></span>
+          </div>
+          <div>
+            <span class="text-gray-600">Passing Score:</span>
+            <span id="review-passing-score" class="font-semibold ml-2"></span>
+          </div>
+          <div>
+            <span class="text-gray-600">Time Limit:</span>
+            <span id="review-time-limit" class="font-semibold ml-2"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Questions Review -->
+      <div class="mb-6">
+        <h3 class="font-bold text-lg mb-4">Questions Preview</h3>
+        <div id="review-questions-list" class="space-y-3"></div>
+      </div>
+
+      <div class="flex justify-between mt-8">
+        <button id="back-to-step-2" class="px-8 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50">
+          ← Back to Edit
+        </button>
+        <div class="flex gap-3">
+          <button id="save-draft-btn" class="px-8 py-3 border-2 border-indigo-600 text-indigo-600 font-semibold rounded-lg hover:bg-indigo-50">
+            Save as Draft
+          </button>
+          <button id="publish-exam-btn" class="px-8 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold rounded-lg hover:from-green-700 hover:to-emerald-700 shadow-lg">
+            Publish Exam
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const API_BASE = 'http://localhost:5000';
+    const params = new URLSearchParams(window.location.search);
+    const courseId = params.get('courseId');
+
+    let currentStep = 1;
+    let examData = {
+      title: '',
+      description: '',
+      exam_type: 'final',
+      passing_score: 75,
+      time_limit: null,
+      allow_retakes: true
+    };
+    let questions = [];
+    let createdExamId = null;
+
+    // Get token
+    function getToken() {
+      return window.AuthHelper ? window.AuthHelper.getToken() : 
+             sessionStorage.getItem('token') || 
+             sessionStorage.getItem('auth_token');
+    }
+
+    // Sign out
+    document.getElementById('signout')?.addEventListener('click', async () => {
+      sessionStorage.clear();
+      window.location.href = '/landing.html';
+    });
+
+    // Check authentication first
+    const token = getToken();
+    if (!token) {
+      window.Notifications.error('Please sign in to create exams');
+      setTimeout(() => window.location.href = '/signIn.html', 1500);
+      throw new Error('Not authenticated');
+    }
+
+    // Check course ID
+    if (!courseId) {
+      window.Notifications.error('No course specified');
+      setTimeout(() => window.location.href = '/instructorDashboard.html', 1500);
+      throw new Error('No course ID');
+    }
+
+    // Step navigation
+    function showStep(step) {
+      // Hide all steps
+      document.getElementById('step-1').classList.add('hidden');
+      document.getElementById('step-2').classList.add('hidden');
+      document.getElementById('step-3').classList.add('hidden');
+
+      // Show current step
+      document.getElementById(`step-${step}`).classList.remove('hidden');
+
+      // Update indicators
+      for (let i = 1; i <= 3; i++) {
+        const indicator = document.getElementById(`step-${i}-indicator`);
+        const text = document.getElementById(`step-${i}-text`);
+        
+        if (i < step) {
+          indicator.className = 'flex items-center justify-center w-10 h-10 rounded-full bg-green-600 text-white font-bold';
+          text.className = 'font-semibold text-green-600';
+        } else if (i === step) {
+          indicator.className = 'flex items-center justify-center w-10 h-10 rounded-full bg-indigo-600 text-white font-bold';
+          text.className = 'font-semibold text-indigo-600';
+        } else {
+          indicator.className = 'flex items-center justify-center w-10 h-10 rounded-full bg-gray-300 text-gray-600 font-bold';
+          text.className = 'font-semibold text-gray-500';
+        }
+      }
+
+      currentStep = step;
+    }
+
+    // Step 1 → Step 2
+    document.getElementById('next-to-step-2')?.addEventListener('click', () => {
+      const title = document.getElementById('exam-title').value.trim();
+      const examType = document.getElementById('exam-type').value;
+      const passingScore = parseInt(document.getElementById('passing-score').value);
+
+      if (!title) {
+        window.Notifications.error('Please enter an exam title');
+        return;
+      }
+
+      if (passingScore < 0 || passingScore > 100) {
+        window.Notifications.error('Passing score must be between 0 and 100');
+        return;
+      }
+
+      examData = {
+        title: title,
+        description: document.getElementById('exam-description').value.trim(),
+        exam_type: examType,
+        passing_score: passingScore,
+        time_limit: parseInt(document.getElementById('time-limit').value) || null,
+        allow_retakes: document.getElementById('allow-retakes').checked
+      };
+
+      showStep(2);
+    });
+
+    // Back to Step 1
+    document.getElementById('back-to-step-1')?.addEventListener('click', () => {
+      showStep(1);
+    });
+
+    // Add Question
+    document.getElementById('add-question-btn')?.addEventListener('click', () => {
+      const questionText = document.getElementById('new-question-text').value.trim();
+      const optionA = document.getElementById('new-option-a').value.trim();
+      const optionB = document.getElementById('new-option-b').value.trim();
+      const optionC = document.getElementById('new-option-c').value.trim();
+      const optionD = document.getElementById('new-option-d').value.trim();
+      const correctAnswer = document.getElementById('new-correct-answer').value;
+      const points = parseInt(document.getElementById('new-points').value);
+      const explanation = document.getElementById('new-explanation').value.trim();
+
+      if (!questionText) {
+        window.Notifications.error('Please enter a question');
+        return;
+      }
+
+      if (!optionA || !optionB || !optionC || !optionD) {
+        window.Notifications.error('Please fill in all 4 options');
+        return;
+      }
+
+      if (!correctAnswer) {
+        window.Notifications.error('Please select the correct answer');
+        return;
+      }
+
+      questions.push({
+        question: questionText,
+        options: { A: optionA, B: optionB, C: optionC, D: optionD },
+        correct_answer: correctAnswer,
+        points: points,
+        explanation: explanation || null,
+        position: questions.length
+      });
+
+      // Clear form
+      document.getElementById('new-question-text').value = '';
+      document.getElementById('new-option-a').value = '';
+      document.getElementById('new-option-b').value = '';
+      document.getElementById('new-option-c').value = '';
+      document.getElementById('new-option-d').value = '';
+      document.getElementById('new-correct-answer').value = '';
+      document.getElementById('new-points').value = '10';
+      document.getElementById('new-explanation').value = '';
+
+      renderQuestions();
+      window.Notifications.success('Question added!');
+    });
+
+    // Render questions
+    function renderQuestions() {
+      const container = document.getElementById('questions-list');
+      document.getElementById('question-count').textContent = questions.length;
+      
+      const totalPoints = questions.reduce((sum, q) => sum + q.points, 0);
+      document.getElementById('total-points').textContent = totalPoints;
+
+      // Enable/disable next button
+      document.getElementById('next-to-step-3').disabled = questions.length === 0;
+
+      if (questions.length === 0) {
+        container.innerHTML = '<div class="text-center py-8 text-gray-500">No questions added yet. Add your first question above!</div>';
+        return;
+      }
+
+      container.innerHTML = questions.map((q, idx) => `
+        <div class="border-2 border-gray-200 rounded-lg p-4 bg-white hover:shadow-md transition">
+          <div class="flex items-start justify-between">
+            <div class="flex-1">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="bg-indigo-600 text-white px-3 py-1 rounded-full text-sm font-bold">Q${idx + 1}</span>
+                <span class="text-xs text-gray-500">${q.points} points</span>
+                <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">Correct: ${q.correct_answer}</span>
+              </div>
+              <p class="font-semibold text-gray-900 mb-2">${q.question}</p>
+              <div class="grid grid-cols-2 gap-2 text-sm text-gray-600">
+                <div>A: ${q.options.A}</div>
+                <div>B: ${q.options.B}</div>
+                <div>C: ${q.options.C}</div>
+                <div>D: ${q.options.D}</div>
+              </div>
+            </div>
+            <button onclick="deleteQuestion(${idx})" class="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700">Delete</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Delete question
+    window.deleteQuestion = (index) => {
+      if (confirm('Delete this question?')) {
+        questions.splice(index, 1);
+        // Update positions
+        questions.forEach((q, idx) => q.position = idx);
+        renderQuestions();
+        window.Notifications.success('Question deleted');
+      }
+    };
+
+    // ============================================
+    // CSV IMPORT FUNCTIONALITY
+    // ============================================
+
+    // Download CSV Template
+    document.getElementById('download-template-btn')?.addEventListener('click', () => {
+      const template = `question,option_a,option_b,option_c,option_d,correct_answer,points,explanation
+"What is artificial intelligence?","A computer program","Machine learning only","Systems that mimic human intelligence","A robot","C",10,"AI encompasses various technologies that simulate human intelligence"
+"Sample question 2?","Option A","Option B","Option C","Option D","A",10,"Add your explanation here"`;
+
+      const blob = new Blob([template], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'exam_questions_template.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      window.Notifications.success('Template downloaded! Edit it and import back.');
+    });
+
+    // Trigger CSV file input
+    document.getElementById('import-csv-btn')?.addEventListener('click', () => {
+      document.getElementById('csv-file-input').click();
+    });
+
+    // Handle CSV file selection
+    document.getElementById('csv-file-input')?.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      try {
+        const text = await file.text();
+        const importedQuestions = parseCSV(text);
+        
+        // Add all imported questions to the questions array
+        let addedCount = 0;
+        importedQuestions.forEach(q => {
+          questions.push({
+            question: q.question,
+            options: { 
+              A: q.option_a, 
+              B: q.option_b, 
+              C: q.option_c, 
+              D: q.option_d 
+            },
+            correct_answer: q.correct_answer.toUpperCase(),
+            points: parseInt(q.points) || 10,
+            explanation: q.explanation || null,
+            position: questions.length
+          });
+          addedCount++;
+        });
+
+        renderQuestions();
+        window.Notifications.success(`✅ Imported ${addedCount} questions successfully!`);
+        
+        // Clear file input
+        e.target.value = '';
+      } catch (err) {
+        console.error('CSV import error:', err);
+        window.Notifications.error('Failed to import CSV: ' + err.message);
+      }
+    });
+
+    // CSV Parser Function
+    function parseCSV(text) {
+      const lines = text.split('\n').filter(line => line.trim());
+      if (lines.length < 2) {
+        throw new Error('CSV file is empty or invalid');
+      }
+
+      // Parse header
+      const headers = parseCSVLine(lines[0]);
+      
+      // Validate required columns
+      const requiredColumns = ['question', 'option_a', 'option_b', 'option_c', 'option_d', 'correct_answer'];
+      const missingColumns = requiredColumns.filter(col => !headers.includes(col));
+      if (missingColumns.length > 0) {
+        throw new Error(`Missing required columns: ${missingColumns.join(', ')}`);
+      }
+
+      // Parse data rows
+      const questions = [];
+      for (let i = 1; i < lines.length; i++) {
+        const values = parseCSVLine(lines[i]);
+        if (values.length === 0 || !values.join('').trim()) continue; // Skip empty lines
+
+        const question = {};
+        headers.forEach((header, index) => {
+          question[header] = values[index] || '';
+        });
+
+        // Validate question
+        if (!question.question || !question.correct_answer) {
+          console.warn(`Skipping invalid row ${i + 1}`);
+          continue;
+        }
+
+        // Validate correct answer
+        const answer = question.correct_answer.toUpperCase();
+        if (!['A', 'B', 'C', 'D'].includes(answer)) {
+          throw new Error(`Row ${i + 1}: correct_answer must be A, B, C, or D (found: ${question.correct_answer})`);
+        }
+
+        question.correct_answer = answer;
+        questions.push(question);
+      }
+
+      if (questions.length === 0) {
+        throw new Error('No valid questions found in CSV');
+      }
+
+      return questions;
+    }
+
+    // Parse CSV line handling quotes and commas
+    function parseCSVLine(line) {
+      const result = [];
+      let current = '';
+      let inQuotes = false;
+
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+
+        if (char === '"') {
+          // Toggle quote state
+          if (inQuotes && line[i + 1] === '"') {
+            // Escaped quote
+            current += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (char === ',' && !inQuotes) {
+          // End of field
+          result.push(current.trim());
+          current = '';
+        } else {
+          current += char;
+        }
+      }
+
+      // Add last field
+      result.push(current.trim());
+
+      return result;
+    }
+
+    // Step 2 → Step 3
+    document.getElementById('next-to-step-3')?.addEventListener('click', () => {
+      if (questions.length === 0) {
+        window.Notifications.error('Please add at least one question');
+        return;
+      }
+
+      // Populate review
+      document.getElementById('review-title').textContent = examData.title;
+      document.getElementById('review-type').textContent = examData.exam_type.charAt(0).toUpperCase() + examData.exam_type.slice(1);
+      document.getElementById('review-question-count').textContent = questions.length;
+      
+      const totalPoints = questions.reduce((sum, q) => sum + q.points, 0);
+      document.getElementById('review-total-points').textContent = totalPoints;
+      document.getElementById('review-passing-score').textContent = examData.passing_score + '%';
+      document.getElementById('review-time-limit').textContent = examData.time_limit ? `${examData.time_limit} minutes` : 'No limit';
+
+      // Render questions preview
+      const reviewContainer = document.getElementById('review-questions-list');
+      reviewContainer.innerHTML = questions.map((q, idx) => `
+        <div class="border rounded-lg p-4 bg-gray-50">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="font-bold">Question ${idx + 1}</span>
+            <span class="text-xs text-gray-500">(${q.points} points)</span>
+          </div>
+          <p class="font-semibold mb-2">${q.question}</p>
+          <div class="text-sm text-gray-600 space-y-1">
+            <div>A: ${q.options.A} ${q.correct_answer === 'A' ? '✓' : ''}</div>
+            <div>B: ${q.options.B} ${q.correct_answer === 'B' ? '✓' : ''}</div>
+            <div>C: ${q.options.C} ${q.correct_answer === 'C' ? '✓' : ''}</div>
+            <div>D: ${q.options.D} ${q.correct_answer === 'D' ? '✓' : ''}</div>
+          </div>
+        </div>
+      `).join('');
+
+      showStep(3);
+    });
+
+    // Back to Step 2
+    document.getElementById('back-to-step-2')?.addEventListener('click', () => {
+      showStep(2);
+    });
+
+    // Save Draft
+    document.getElementById('save-draft-btn')?.addEventListener('click', async () => {
+      await createExam(false);
+    });
+
+    // Publish Exam
+    document.getElementById('publish-exam-btn')?.addEventListener('click', async () => {
+      await createExam(true);
+    });
+
+    // Create exam
+    async function createExam(publish) {
+      try {
+        const token = getToken();
+        if (!token) {
+          window.Notifications.error('Not authenticated');
+          return;
+        }
+
+        const btn = publish ? document.getElementById('publish-exam-btn') : document.getElementById('save-draft-btn');
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = 'Creating...';
+
+        // Create exam
+        const examResponse = await fetch(`${API_BASE}/api/exams`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            course_id: courseId,
+            ...examData
+          })
+        });
+
+        if (!examResponse.ok) {
+          const error = await examResponse.json();
+          throw new Error(error.error || 'Failed to create exam');
+        }
+
+        const { data: exam } = await examResponse.json();
+        createdExamId = exam.id;
+
+        // Add questions
+        for (const question of questions) {
+          const questionResponse = await fetch(`${API_BASE}/api/exams/${createdExamId}/questions`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(question)
+          });
+
+          if (!questionResponse.ok) {
+            throw new Error('Failed to add question');
+          }
+        }
+
+        // Publish if requested
+        if (publish) {
+          const publishResponse = await fetch(`${API_BASE}/api/exams/${createdExamId}/publish`, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ is_published: true })
+          });
+
+          if (!publishResponse.ok) {
+            throw new Error('Failed to publish exam');
+          }
+        }
+
+        window.Notifications.success(publish ? 'Exam published successfully!' : 'Exam saved as draft!');
+        
+        setTimeout(() => {
+          window.location.href = `/courseManage.html?id=${courseId}`;
+        }, 1500);
+
+      } catch (err) {
+        console.error('Create exam error:', err);
+        window.Notifications.error(err.message);
+        const btn = publish ? document.getElementById('publish-exam-btn') : document.getElementById('save-draft-btn');
+        btn.disabled = false;
+        btn.textContent = publish ? 'Publish Exam' : 'Save as Draft';
+      }
+    }
+  </script>
+</body>
+</html>
