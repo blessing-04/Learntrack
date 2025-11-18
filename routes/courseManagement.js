@@ -613,4 +613,215 @@ router.delete('/:courseId/sections/:sectionId/lessons/:lessonId', requireAuth, a
   }
 });
 
+// ============================================
+// QUIZ MANAGEMENT ROUTES
+// ============================================
+
+/**
+ * POST /api/course-management/:courseId/quizzes
+ * Create a new quiz for a course
+ */
+router.post('/:courseId/quizzes', async (req, res, next) => {
+  try {
+    const token = getAccessToken(req);
+    if (!token) return res.status(401).json({ error: 'No token' });
+
+    const supabase = clientForToken(token);
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) return res.status(401).json({ error: 'Unauthorized' });
+
+    const { courseId } = req.params;
+    const { question, correct_answer, options, quiz_type, points, time_limit, allow_retakes, passing_score, position } = req.body;
+
+    // Verify course ownership
+    const { data: course, error: courseErr } = await supabase
+      .from('courses')
+      .select('instructor_id')
+      .eq('id', courseId)
+      .single();
+
+    if (courseErr) throw courseErr;
+    if (!course) return res.status(404).json({ error: 'Course not found' });
+    if (course.instructor_id !== user.id) return res.status(403).json({ error: 'Not authorized' });
+
+    // Validation
+    if (!question || !correct_answer) {
+      return res.status(400).json({ error: 'Question and correct answer are required' });
+    }
+
+    // For MCQ, options are required
+    if (quiz_type === 'multiple_choice' && !options) {
+      return res.status(400).json({ error: 'Options are required for multiple choice questions' });
+    }
+
+    // Insert quiz
+    const { data: quiz, error: insertError } = await supabase
+      .from('course_quizzes')
+      .insert({
+        course_id: courseId,
+        question: question,
+        correct_answer: correct_answer,
+        options: options || null,
+        quiz_type: quiz_type || 'multiple_choice',
+        points: points || 10,
+        time_limit: time_limit || null,
+        allow_retakes: allow_retakes !== undefined ? allow_retakes : true,
+        passing_score: passing_score || null,
+        position: position || 0
+      })
+      .select()
+      .single();
+
+    if (insertError) throw insertError;
+
+    res.status(201).json({ 
+      success: true,
+      message: 'Quiz created successfully',
+      data: quiz
+    });
+  } catch (err) {
+    console.error('Create quiz error:', err);
+    next(err);
+  }
+});
+
+/**
+ * GET /api/course-management/:courseId/quizzes
+ * Get all quizzes for a course (instructor view)
+ */
+router.get('/:courseId/quizzes', async (req, res, next) => {
+  try {
+    const token = getAccessToken(req);
+    if (!token) return res.status(401).json({ error: 'No token' });
+
+    const supabase = clientForToken(token);
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) return res.status(401).json({ error: 'Unauthorized' });
+
+    const { courseId } = req.params;
+
+    // Verify course ownership
+    const { data: course, error: courseErr } = await supabase
+      .from('courses')
+      .select('instructor_id')
+      .eq('id', courseId)
+      .single();
+
+    if (courseErr) throw courseErr;
+    if (!course) return res.status(404).json({ error: 'Course not found' });
+    if (course.instructor_id !== user.id) return res.status(403).json({ error: 'Not authorized' });
+
+    // Get quizzes
+    const { data: quizzes, error } = await supabase
+      .from('course_quizzes')
+      .select('*')
+      .eq('course_id', courseId)
+      .order('position', { ascending: true });
+
+    if (error) throw error;
+
+    res.json({ 
+      success: true,
+      data: quizzes || []
+    });
+  } catch (err) {
+    console.error('Get quizzes error:', err);
+    next(err);
+  }
+});
+
+/**
+ * PUT /api/course-management/:courseId/quizzes/:quizId
+ * Update a quiz
+ */
+router.put('/:courseId/quizzes/:quizId', async (req, res, next) => {
+  try {
+    const token = getAccessToken(req);
+    if (!token) return res.status(401).json({ error: 'No token' });
+
+    const supabase = clientForToken(token);
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) return res.status(401).json({ error: 'Unauthorized' });
+
+    const { courseId, quizId } = req.params;
+    const updateData = req.body;
+
+    // Verify course ownership
+    const { data: course, error: courseErr } = await supabase
+      .from('courses')
+      .select('instructor_id')
+      .eq('id', courseId)
+      .single();
+
+    if (courseErr) throw courseErr;
+    if (!course) return res.status(404).json({ error: 'Course not found' });
+    if (course.instructor_id !== user.id) return res.status(403).json({ error: 'Not authorized' });
+
+    // Update quiz
+    const { data: quiz, error: updateError } = await supabase
+      .from('course_quizzes')
+      .update(updateData)
+      .eq('id', quizId)
+      .eq('course_id', courseId)
+      .select()
+      .single();
+
+    if (updateError) throw updateError;
+
+    res.json({ 
+      success: true,
+      message: 'Quiz updated successfully',
+      data: quiz
+    });
+  } catch (err) {
+    console.error('Update quiz error:', err);
+    next(err);
+  }
+});
+
+/**
+ * DELETE /api/course-management/:courseId/quizzes/:quizId
+ * Delete a quiz
+ */
+router.delete('/:courseId/quizzes/:quizId', async (req, res, next) => {
+  try {
+    const token = getAccessToken(req);
+    if (!token) return res.status(401).json({ error: 'No token' });
+
+    const supabase = clientForToken(token);
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) return res.status(401).json({ error: 'Unauthorized' });
+
+    const { courseId, quizId } = req.params;
+
+    // Verify course ownership
+    const { data: course, error: courseErr } = await supabase
+      .from('courses')
+      .select('instructor_id')
+      .eq('id', courseId)
+      .single();
+
+    if (courseErr) throw courseErr;
+    if (!course) return res.status(404).json({ error: 'Course not found' });
+    if (course.instructor_id !== user.id) return res.status(403).json({ error: 'Not authorized' });
+
+    // Delete quiz
+    const { error: deleteError } = await supabase
+      .from('course_quizzes')
+      .delete()
+      .eq('id', quizId)
+      .eq('course_id', courseId);
+
+    if (deleteError) throw deleteError;
+
+    res.json({ 
+      success: true,
+      message: 'Quiz deleted successfully'
+    });
+  } catch (err) {
+    console.error('Delete quiz error:', err);
+    next(err);
+  }
+});
+
 module.exports = router;

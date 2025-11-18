@@ -39,12 +39,3 @@ build/
 *.tmp
 *.temp
 .cache/
-
-# PM2
-.pm2/
-pids/
-*.pid
-
-# Deployment
-.env.production
-.env.staging
