@@ -41,45 +41,20 @@ router.post('/signup', async (req, res) => {
     }
     try{
         const userRole = role || 'learner';
-        
-        // For instructors: auto-confirm email (they'll verify via payment)
-        // For learners: send confirmation email as normal
-        const signupOptions = {
-            data: {
-              name, 
-              role: userRole,
-              // Instructors start with unpaid status
-              payment_status: userRole === 'instructor' ? 'pending' : 'completed',
-              payment_amount: userRole === 'instructor' ? 1500 : 0,
-              registration_date: new Date().toISOString()
-            },
-            emailRedirectTo: "http://localhost:5000/signIn.html"
-        };
-
-        // Auto-confirm instructors (skip email verification)
-        if (userRole === 'instructor') {
-            const { data, error } = await supabaseAdmin.auth.admin.createUser({
-                email,
-                password,
-                email_confirm: true, // Skip email verification
-                user_metadata: signupOptions.data
-            });
-            
-            if (error) {
-                return res.status(400).json({error: error.message});
-            }
-            
-            return res.json({
-                message: 'Instructor registered successfully',
-                user: data.user
-            });
-        }
-        
-        // Regular signup for learners (with email verification)
         const {data, error} = await supabase.auth.signUp({
             email,
             password,
-            options: signupOptions
+            options: {
+                data: {
+                  name, 
+                  role: userRole,
+                  // Instructors start with unpaid status
+                  payment_status: userRole === 'instructor' ? 'pending' : 'completed',
+                  payment_amount: userRole === 'instructor' ? 1500 : 0,
+                  registration_date: new Date().toISOString()
+                },
+                emailRedirectTo: "http://localhost:5000/signIn.html"
+            }    
         });
         if (error){
             return res.status(400).json({error: error.message});
