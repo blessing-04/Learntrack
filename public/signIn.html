@@ -69,7 +69,6 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="/js/config.js"></script>
   <script src="/js/app.js"></script>
   <script>
    const signinForm = document.getElementById('signin-form');
@@ -80,8 +79,7 @@ signinForm?.addEventListener('submit', async (e) => {
   const password = document.getElementById('signin-password').value;
 
   try {
-    const API_BASE = window.APP_CONFIG?.API_BASE || window.location.origin;
-    const response = await fetch(`${API_BASE}/api/signin`, {
+    const response = await fetch("http://localhost:5000/api/signin", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password })

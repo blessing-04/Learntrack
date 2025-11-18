@@ -3,7 +3,7 @@
  - Fetches: /api/profiles/me, /api/enrollments/mine, /api/courses
 */
 (function(){
-  const API_BASE = window.APP_CONFIG?.API_BASE || window.location.origin;
+  const API_BASE = 'http://localhost:5000';
 
   // Use centralized token getter
   function getToken(){

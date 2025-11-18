@@ -5,9 +5,10 @@ const { createClient } = require('@supabase/supabase-js');
 const router = express.Router();
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
+// Use service role key for backend operations (bypasses RLS)
 const supabase = createClient(
   process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
+  process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
 // POST /api/payments/create-checkout-session - Create Stripe checkout for a course

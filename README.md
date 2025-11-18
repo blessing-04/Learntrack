@@ -96,24 +96,10 @@ npm install
 Create a `.env` file in the project root:
 
 ```env
-# Server
-PORT=5000
-CORS_ORIGIN=http://localhost:5000
-
-# Supabase
 SUPABASE_URL=your_supabase_project_url
-SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
-
-# Stripe (for payments)
-STRIPE_SECRET_KEY=sk_test_your_secret_key
-STRIPE_PUBLISHABLE_KEY=pk_test_your_publishable_key
-
-# Frontend URL
-FRONTEND_URL=http://localhost:5000
+SUPABASE_KEY=your_supabase_anon_key
+PORT=5000
 ```
-
-**See `.env.example` for template**
 
 ### 4. Database Setup
 
@@ -141,29 +127,16 @@ Visit: `http://localhost:5000/landing.html`
 
 ## 📖 Documentation
 
-Comprehensive documentation available:
+Comprehensive documentation available in:
 
-📘 **USER_GUIDE.md** - For Students & Instructors
-- Getting started guide
-- How to enroll in courses
-- How to create courses
-- Payment instructions
-- Profile management
-- FAQ section
-
-📗 **TECHNICAL_DOCUMENTATION.md** - For Developers
-- System architecture
-- API documentation
-- Database schema
-- Authentication & security
-- Payment integration
-- Deployment guide
+📄 **LEARNTRACK_COMPLETE_DOCUMENTATION.md** - Full system documentation
+- Executive summary
+- Feature breakdown
+- Technical architecture
+- Implementation details
+- Security features
+- User guides
 - Troubleshooting
-
-📙 **Additional Documentation:**
-- COURSE_PAYMENT_IMPLEMENTATION.md - Payment system details
-- PROJECT_STRUCTURE.txt - File organization
-- FINAL_UPDATES.md - Recent changes
 
 ---
 
@@ -265,48 +238,37 @@ Works perfectly on:
 ## 🔄 Current Status
 
 ✅ **Completed Features**:
-- User authentication (sign up, sign in)
+- User authentication (sign up, sign in, password reset)
 - Student dashboard and course enrollment
 - Instructor dashboard and course creation
-- Video & document upload (50MB videos, 10MB documents)
+- Video & document upload
 - Course browsing and filtering
-- **Stripe payment integration** (instructor registration & course enrollment)
-- Profile management (student & instructor)
+- Top 3 featured courses (rating-based)
+- Payment page (ready for gateway integration)
+- Profile management
 - Professional icon system
 - Responsive design
-- Payment verification system
-- Enrollment tracking
-- Course statistics
 
-💳 **Payment System**:
-- Instructor registration: R 1,500 one-time fee
-- Course enrollment: Variable pricing (set by instructor)
-- Stripe Checkout integration
-- Automatic enrollment after payment
-- Test mode with test cards
+🚧 **In Development**:
+- Payment gateway integration (PayFast)
+- Advanced search and filters
+- Course completion certificates
+- Student progress tracking
 
 📋 **Planned Features**:
-- Payment webhooks for real-time updates
-- Course completion certificates
-- Advanced search and filters
-- Discussion forums
-- Live streaming classes
 - Mobile apps (iOS & Android)
+- Live streaming classes
+- Discussion forums
+- AI-powered recommendations
 
 ---
 
 ## 📧 Support & Contact
 
-### Documentation Resources:
-- **USER_GUIDE.md** - User instructions and FAQ
-- **TECHNICAL_DOCUMENTATION.md** - Developer documentation
-- **COURSE_PAYMENT_IMPLEMENTATION.md** - Payment system details
-
-### Getting Help:
-1. Check the appropriate documentation
-2. Review FAQ sections
-3. Contact system administrator
-4. Check GitHub issues (if applicable)
+For technical support or inquiries:
+- Check `TROUBLESHOOTING_UPLOAD.md` for common issues
+- Review `INSTRUCTOR_DASHBOARD_UPDATE.md` for instructor features
+- See `TOP_3_COURSES_UPDATE.md` for course ranking info
 
 ---
 
@@ -350,10 +312,7 @@ Built with modern web technologies and best practices for online education.
 
 ---
 
-**Version**: 1.0.0  
-**Last Updated**: October 2025  
-**Platform**: Web-based (Browser)  
-**Currency**: South African Rand (R)  
-**Payment Gateway**: Stripe  
-**Status**: Production Ready ✅
-# Learntrack
+**Version**: 1.0.0
+**Last Updated**: October 2025
+**Platform**: Web-based (Browser)
+**Currency**: South African Rand (R)
