@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capture Signature - LearnTrack Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    #signatureCanvas {
+      border: 2px solid #d4af37;
+      border-radius: 8px;
+      cursor: crosshair;
+      touch-action: none;
+      background: white;
+    }
+
+    .signature-preview {
+      border: 2px dashed #ccc;
+      padding: 20px;
+      border-radius: 8px;
+      background: #f9f9f9;
+      min-height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-purple-600 to-blue-500 min-h-screen py-8 px-4">
+
+  <div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="bg-white rounded-lg shadow-2xl p-8 mb-6">
+      <h1 class="text-3xl font-bold text-gray-800 mb-2 flex items-center gap-3">
+        <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+        </svg>
+        Certificate Signature Capture
+      </h1>
+      <p class="text-gray-600">Sign below using your pen/mouse. This signature will appear on all certificates.</p>
+    </div>
+
+    <!-- Signature Pad -->
+    <div class="bg-white rounded-lg shadow-2xl p-8 mb-6">
+      <div class="mb-4">
+        <label class="block text-gray-700 font-semibold mb-2">Your Signature</label>
+        <p class="text-sm text-gray-500 mb-4">Use your pen or mouse to sign in the box below</p>
+
+        <!-- Canvas for drawing -->
+        <div class="mb-4">
+          <canvas id="signatureCanvas" width="800" height="200"></canvas>
+        </div>
+
+        <!-- Controls -->
+        <div class="flex gap-3 flex-wrap">
+          <button onclick="clearSignature()" class="px-6 py-2 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+            </svg>
+            Clear
+          </button>
+          <button onclick="saveSignature()" class="px-6 py-2 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600 flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
+            </svg>
+            Save Signature
+          </button>
+          <button onclick="downloadSignature()" class="px-6 py-2 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+            </svg>
+            Download PNG
+          </button>
+        </div>
+      </div>
+
+      <!-- Name and Title Inputs -->
+      <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Signatory Name</label>
+          <input type="text" id="signatoryName" placeholder="e.g., Dr. Jane Smith"
+                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+        </div>
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Title</label>
+          <input type="text" id="signatoryTitle" placeholder="e.g., Dean of Education"
+                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+        </div>
+      </div>
+    </div>
+
+    <!-- Preview -->
+    <div class="bg-white rounded-lg shadow-2xl p-8">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">Preview</h2>
+      <p class="text-gray-600 mb-4">This is how your signature will appear on certificates:</p>
+
+      <div class="signature-preview">
+        <div id="signaturePreview" class="text-center">
+          <p class="text-gray-400">Sign above to see preview</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Instructions -->
+    <div class="bg-white rounded-lg shadow-2xl p-8 mt-6">
+      <h3 class="text-xl font-bold text-gray-800 mb-3">📋 Instructions</h3>
+      <ol class="list-decimal list-inside space-y-2 text-gray-700">
+        <li>Sign in the canvas above using your pen or mouse</li>
+        <li>Enter your name and title in the fields</li>
+        <li>Click "Save Signature" to store it in browser localStorage</li>
+        <li>Click "Download PNG" to save a backup copy</li>
+        <li>Your signature will automatically appear on all future certificates</li>
+        <li>You can come back here anytime to update your signature</li>
+      </ol>
+
+      <div class="mt-6 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded">
+        <p class="text-sm text-yellow-800">
+          <strong>💡 Tip:</strong> For best results, use a smooth, flowing signature. Try to keep it centered and not too large.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('signatureCanvas');
+    const ctx = canvas.getContext('2d');
+    let isDrawing = false;
+    let lastX = 0;
+    let lastY = 0;
+
+    // Set up canvas drawing style
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    // Mouse events
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mouseout', stopDrawing);
+
+    // Touch events for pen tablets
+    canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+    canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+    canvas.addEventListener('touchend', stopDrawing);
+
+    // Pointer events (works with pen)
+    canvas.addEventListener('pointerdown', startDrawing);
+    canvas.addEventListener('pointermove', draw);
+    canvas.addEventListener('pointerup', stopDrawing);
+
+    function startDrawing(e) {
+      isDrawing = true;
+      const pos = getMousePos(e);
+      lastX = pos.x;
+      lastY = pos.y;
+    }
+
+    function draw(e) {
+      if (!isDrawing) return;
+
+      e.preventDefault();
+      const pos = getMousePos(e);
+
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(pos.x, pos.y);
+      ctx.stroke();
+
+      lastX = pos.x;
+      lastY = pos.y;
+
+      updatePreview();
+    }
+
+    function stopDrawing() {
+      isDrawing = false;
+    }
+
+    function getMousePos(e) {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+
+      let clientX, clientY;
+
+      if (e.touches && e.touches.length > 0) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+      } else if (e.changedTouches && e.changedTouches.length > 0) {
+        clientX = e.changedTouches[0].clientX;
+        clientY = e.changedTouches[0].clientY;
+      } else {
+        clientX = e.clientX;
+        clientY = e.clientY;
+      }
+
+      return {
+        x: (clientX - rect.left) * scaleX,
+        y: (clientY - rect.top) * scaleY
+      };
+    }
+
+    function handleTouchStart(e) {
+      e.preventDefault();
+      startDrawing(e);
+    }
+
+    function handleTouchMove(e) {
+      e.preventDefault();
+      draw(e);
+    }
+
+    function clearSignature() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      updatePreview();
+    }
+
+    function updatePreview() {
+      const signatureData = canvas.toDataURL('image/png');
+      const name = document.getElementById('signatoryName').value || 'Signatory Name';
+      const title = document.getElementById('signatoryTitle').value || 'Title';
+
+      const preview = document.getElementById('signaturePreview');
+      preview.innerHTML = `
+        <div>
+          <div class="border-t-2 border-gray-800 pt-2 mb-2" style="min-width: 250px;">
+            <img src="${signatureData}" alt="Signature" style="max-width: 200px; margin: 0 auto;">
+          </div>
+          <div class="text-gray-800 font-semibold">${name}</div>
+          <div class="text-sm text-gray-500">${title}</div>
+        </div>
+      `;
+    }
+
+    async function saveSignature() {
+      const signatureData = canvas.toDataURL('image/png');
+      const name = document.getElementById('signatoryName').value;
+      const title = document.getElementById('signatoryTitle').value;
+
+      if (!name || !title) {
+        alert('Please enter both name and title before saving!');
+        return;
+      }
+
+      // Check if canvas is empty
+      const blank = document.createElement('canvas');
+      blank.width = canvas.width;
+      blank.height = canvas.height;
+      if (canvas.toDataURL() === blank.toDataURL()) {
+        alert('Please sign before saving!');
+        return;
+      }
+
+      // Upload to server
+      try {
+        const response = await fetch('/api/admin/signature', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            signatureData: signatureData,
+            signatoryName: name,
+            signatoryTitle: title
+          })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          alert('✅ Signature saved to server successfully! It will now appear on all certificates.');
+          updatePreview();
+        } else {
+          alert('❌ Failed to save signature: ' + (result.error || 'Unknown error'));
+        }
+      } catch (err) {
+        console.error('Save signature error:', err);
+        alert('❌ Failed to save signature to server. Check console for details.');
+      }
+    }
+
+    function downloadSignature() {
+      const signatureData = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = 'learntrack-signature.png';
+      link.href = signatureData;
+      link.click();
+
+      alert('✅ Signature downloaded! Keep this as a backup.');
+    }
+
+    // Load existing signature if available
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedSignature = localStorage.getItem('certificate_signature');
+      const savedName = localStorage.getItem('certificate_signatory_name');
+      const savedTitle = localStorage.getItem('certificate_signatory_title');
+
+      if (savedSignature) {
+        const img = new Image();
+        img.onload = function() {
+          ctx.drawImage(img, 0, 0);
+          updatePreview();
+        };
+        img.src = savedSignature;
+      }
+
+      if (savedName) document.getElementById('signatoryName').value = savedName;
+      if (savedTitle) document.getElementById('signatoryTitle').value = savedTitle;
+
+      if (savedSignature && savedName && savedTitle) {
+        updatePreview();
+      }
+    });
+
+    // Update preview when name/title changes
+    document.getElementById('signatoryName').addEventListener('input', updatePreview);
+    document.getElementById('signatoryTitle').addEventListener('input', updatePreview);
+  </script>
+</body>
+</html>
