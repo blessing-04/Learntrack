@@ -56,28 +56,10 @@
       </div>
     </section>
 
-    <!-- Exams Section -->
-    <section class="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl shadow-lg p-6 border-2 border-yellow-300">
-      <div class="flex items-center justify-between mb-4">
-        <div>
-          <h2 class="text-xl font-bold text-yellow-900 flex items-center gap-2">
-            <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v18l7-5 7 5V3H5z"></path></svg> Course Exams
-            <span class="text-xs bg-yellow-200 px-2 py-1 rounded">Final Exam: 75% = Certificate</span>
-          </h2>
-          <p class="text-sm text-yellow-700 mt-1">Create multi-question exams for your course</p>
-        </div>
-        <button id="create-exam-btn" class="px-4 py-2 bg-yellow-600 text-white rounded-lg font-semibold hover:bg-yellow-700">+ Create New Exam</button>
-      </div>
-      
-      <div id="exams-container" class="mt-4 space-y-3">
-        <div class="text-center py-4 text-yellow-700">Loading exams...</div>
-      </div>
-    </section>
-
     <!-- Course Sections -->
     <section class="bg-white rounded-2xl shadow-lg p-6 border">
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-bold">Course Sections & Mini Quizzes</h2>
+        <h2 class="text-xl font-bold">Course Sections</h2>
         <button id="add-section-btn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold">+ Add Section</button>
       </div>
       
@@ -107,7 +89,7 @@
       <div class="space-y-4">
         <!-- Upload Video -->
         <div class="border rounded-lg p-4">
-          <h4 class="font-semibold mb-2 flex items-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg> Upload Video</h4>
+          <h4 class="font-semibold mb-2">📹 Upload Video</h4>
           <input type="file" id="video-upload" accept="video/*" class="hidden" />
           <button id="video-upload-btn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg w-full">Choose Video File</button>
           <div id="video-upload-progress" class="hidden mt-2">
@@ -120,7 +102,7 @@
 
         <!-- Upload Document -->
         <div class="border rounded-lg p-4">
-          <h4 class="font-semibold mb-2 flex items-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> Upload Document</h4>
+          <h4 class="font-semibold mb-2">📄 Upload Document</h4>
           <input type="file" id="doc-upload" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.xlsx" class="hidden" />
           <button id="doc-upload-btn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg w-full">Choose Document File</button>
           <div id="doc-upload-progress" class="hidden mt-2">
@@ -133,45 +115,10 @@
 
         <!-- Add Link -->
         <div class="border rounded-lg p-4">
-          <h4 class="font-semibold mb-2 flex items-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg> Add External Link</h4>
+          <h4 class="font-semibold mb-2">🔗 Add External Link</h4>
           <input type="text" id="link-title-input" placeholder="Link Title" class="w-full px-4 py-2 border rounded-lg mb-2" />
           <input type="url" id="link-url-input" placeholder="https://..." class="w-full px-4 py-2 border rounded-lg mb-2" />
           <button id="add-link-btn-modal" class="px-4 py-2 bg-indigo-600 text-white rounded-lg w-full">Add Link</button>
-        </div>
-
-        <!-- Create Quiz -->
-        <div class="border-2 border-green-300 bg-green-50 rounded-lg p-4">
-          <h4 class="font-semibold mb-3 text-green-900 flex items-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg> Create Mini Quiz (Section Quiz)</h4>
-          <p class="text-xs text-green-700 mb-3">This quiz will appear in this section for students to practice</p>
-          
-          <input type="text" id="quiz-question-input" placeholder="Quiz Question" class="w-full px-4 py-2 border rounded-lg mb-2" />
-          
-          <div class="space-y-2 mb-3">
-            <input type="text" id="quiz-option-a" placeholder="Option A" class="w-full px-4 py-2 border rounded-lg" />
-            <input type="text" id="quiz-option-b" placeholder="Option B" class="w-full px-4 py-2 border rounded-lg" />
-            <input type="text" id="quiz-option-c" placeholder="Option C" class="w-full px-4 py-2 border rounded-lg" />
-            <input type="text" id="quiz-option-d" placeholder="Option D" class="w-full px-4 py-2 border rounded-lg" />
-          </div>
-
-          <select id="quiz-correct-answer" class="w-full px-4 py-2 border rounded-lg mb-2">
-            <option value="">Select Correct Answer</option>
-            <option value="A">A</option>
-            <option value="B">B</option>
-            <option value="C">C</option>
-            <option value="D">D</option>
-          </select>
-
-          <div class="grid grid-cols-2 gap-2 mb-2">
-            <input type="number" id="quiz-points" placeholder="Points (default: 10)" class="px-4 py-2 border rounded-lg" min="1" value="10" />
-            <input type="number" id="quiz-passing-score" placeholder="Passing % (optional)" class="px-4 py-2 border rounded-lg" min="0" max="100" />
-          </div>
-
-          <label class="flex items-center gap-2 mb-2">
-            <input type="checkbox" id="quiz-allow-retakes" checked class="w-4 h-4" />
-            <span class="text-sm">Allow retakes</span>
-          </label>
-
-          <button id="create-quiz-btn" class="px-4 py-2 bg-green-600 text-white rounded-lg w-full font-semibold hover:bg-green-700">Create Quiz</button>
         </div>
       </div>
 
@@ -297,7 +244,7 @@
             ${section.lessons && section.lessons.length > 0 ? section.lessons.map(lesson => `
               <div class="flex items-center justify-between bg-white p-3 rounded border hover:shadow-sm transition">
                 <div class="flex items-center gap-3">
-                  <span class="inline-flex">${lesson.video_url ? '<svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>' : lesson.resource_urls && lesson.resource_urls.length > 0 ? '<svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>' : '<svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>'}</span>
+                  <span class="text-2xl">${lesson.video_url ? '📹' : lesson.resource_urls && lesson.resource_urls.length > 0 ? '📄' : '🔗'}</span>
                   <div>
                     <p class="font-medium">${lesson.title}</p>
                     ${lesson.video_url ? '<p class="text-xs text-gray-500">Video</p>' : 
@@ -587,7 +534,7 @@
       const courseName = document.getElementById('course-title').textContent;
       
       // First confirmation
-      const firstConfirm = await window.Notifications.confirm(`WARNING: This will permanently delete the entire course "${courseName}" and all its content! This action cannot be undone. Are you sure you want to continue?`);
+      const firstConfirm = await window.Notifications.confirm(`⚠️ WARNING: This will permanently delete the entire course "${courseName}" and all its content! This action cannot be undone. Are you sure you want to continue?`);
       if (!firstConfirm) return;
 
       // Double confirmation
@@ -661,7 +608,7 @@
           // Display link or document download
           contentEl.innerHTML = `
             <div class="p-8 text-center border-2 border-dashed rounded-lg">
-              <div class="mb-4">${url.startsWith('http') ? '<svg class="w-16 h-16 mx-auto text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>' : '<svg class="w-16 h-16 mx-auto text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>'}</div>
+              <div class="text-6xl mb-4">${url.startsWith('http') ? '🔗' : '📄'}</div>
               <p class="text-lg font-semibold mb-2">${lesson.title}</p>
               <p class="text-gray-600 mb-4">Click below to open this ${url.startsWith('http') ? 'link' : 'document'}</p>
               <a href="${url}" target="_blank" class="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700">
@@ -693,216 +640,8 @@
       }
     });
 
-    // ============================================
-    // QUIZ CREATION (MINI QUIZZES)
-    // ============================================
-
-    document.getElementById('create-quiz-btn')?.addEventListener('click', async () => {
-      try {
-        const question = document.getElementById('quiz-question-input')?.value.trim();
-        const optionA = document.getElementById('quiz-option-a')?.value.trim();
-        const optionB = document.getElementById('quiz-option-b')?.value.trim();
-        const optionC = document.getElementById('quiz-option-c')?.value.trim();
-        const optionD = document.getElementById('quiz-option-d')?.value.trim();
-        const correctAnswer = document.getElementById('quiz-correct-answer')?.value;
-        const points = parseInt(document.getElementById('quiz-points')?.value) || 10;
-        const passingScore = parseInt(document.getElementById('quiz-passing-score')?.value) || null;
-        const allowRetakes = document.getElementById('quiz-allow-retakes')?.checked;
-
-        // Validation
-        if (!question) {
-          window.Notifications.error('Please enter a question');
-          return;
-        }
-        if (!optionA || !optionB || !optionC || !optionD) {
-          window.Notifications.error('Please fill in all 4 options');
-          return;
-        }
-        if (!correctAnswer) {
-          window.Notifications.error('Please select the correct answer');
-          return;
-        }
-
-        const token = sessionStorage.getItem('token');
-        if (!token) {
-          window.Notifications.error('No authentication token');
-          return;
-        }
-
-        const btn = document.getElementById('create-quiz-btn');
-        const originalText = btn.textContent;
-        btn.disabled = true;
-        btn.textContent = 'Creating...';
-
-        const response = await fetch(`/api/course-management/${courseId}/quizzes`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            question: question,
-            correct_answer: correctAnswer,
-            options: {
-              A: optionA,
-              B: optionB,
-              C: optionC,
-              D: optionD
-            },
-            quiz_type: 'multiple_choice',
-            quiz_category: 'mini',
-            points: points,
-            allow_retakes: allowRetakes,
-            passing_score: passingScore,
-            position: 0
-          })
-        });
-
-        if (!response.ok) {
-          const error = await response.json();
-          throw new Error(error.error || 'Failed to create quiz');
-        }
-
-        const { data } = await response.json();
-        
-        window.Notifications.success('Quiz created successfully!');
-        
-        // Clear form
-        document.getElementById('quiz-question-input').value = '';
-        document.getElementById('quiz-option-a').value = '';
-        document.getElementById('quiz-option-b').value = '';
-        document.getElementById('quiz-option-c').value = '';
-        document.getElementById('quiz-option-d').value = '';
-        document.getElementById('quiz-correct-answer').value = '';
-        document.getElementById('quiz-points').value = '10';
-        document.getElementById('quiz-passing-score').value = '';
-        document.getElementById('quiz-allow-retakes').checked = true;
-
-        btn.disabled = false;
-        btn.textContent = originalText;
-
-        // Reload course to show updated quiz count
-        await loadCourse();
-      } catch (err) {
-        console.error('Create quiz error:', err);
-        window.Notifications.error(err.message || 'Failed to create quiz');
-        const btn = document.getElementById('create-quiz-btn');
-        btn.disabled = false;
-        btn.textContent = 'Create Quiz';
-      }
-    });
-
-    // ============================================
-    // EXAM MANAGEMENT (Multi-Question Exams)
-    // ============================================
-
-    // Create exam button - redirect to exam creator
-    document.getElementById('create-exam-btn')?.addEventListener('click', () => {
-      window.location.href = `/examCreate.html?courseId=${courseId}`;
-    });
-
-    // Load exams
-    async function loadExams() {
-      try {
-        const token = sessionStorage.getItem('token');
-        const response = await fetch(`/api/exams/course/${courseId}`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-
-        if (!response.ok) {
-          document.getElementById('exams-container').innerHTML = '<div class="text-center py-4 text-yellow-700">No exams yet</div>';
-          return;
-        }
-
-        const { data: exams } = await response.json();
-        const container = document.getElementById('exams-container');
-        
-        if (!exams || exams.length === 0) {
-          container.innerHTML = '<div class="text-center py-4 text-yellow-700">No exams yet. Click "Create New Exam" to add one.</div>';
-          return;
-        }
-
-        container.innerHTML = exams.map(exam => {
-          const isFinal = exam.exam_type === 'final';
-          return `
-            <div class="bg-white border-2 ${isFinal ? 'border-yellow-400' : 'border-gray-300'} rounded-lg p-4 hover:shadow-lg transition">
-              <div class="flex items-start justify-between">
-                <div class="flex-1">
-                  <div class="flex items-center gap-2 mb-2">
-                    <h3 class="font-bold text-lg">${exam.title}</h3>
-                    <span class="text-xs px-2 py-1 rounded ${isFinal ? 'bg-yellow-200 text-yellow-800' : 'bg-gray-200 text-gray-700'}">
-                      ${exam.exam_type}
-                    </span>
-                    <span class="text-xs px-2 py-1 rounded ${exam.is_published ? 'bg-green-200 text-green-700' : 'bg-gray-200 text-gray-600'}">
-                      ${exam.is_published ? 'Published' : 'Draft'}
-                    </span>
-                  </div>
-                  ${exam.description ? `<p class="text-sm text-gray-600 mb-2">${exam.description}</p>` : ''}
-                  <div class="flex items-center gap-4 text-sm text-gray-700">
-                    <span>${exam.question_count} questions</span>
-                    <span>•</span>
-                    <span>${exam.total_points} points total</span>
-                    <span>•</span>
-                    <span>Pass: ${exam.passing_score}%</span>
-                    ${exam.time_limit ? `<span>• ${exam.time_limit} min</span>` : ''}
-                  </div>
-                </div>
-                <div class="flex gap-2">
-                  <button onclick="viewExamAnalytics('${exam.id}')" class="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 flex items-center gap-1">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                    </svg>
-                    Analytics
-                  </button>
-                  <button onclick="editExam('${exam.id}')" class="px-3 py-1 bg-indigo-600 text-white rounded text-sm hover:bg-indigo-700">Edit</button>
-                  <button onclick="deleteExam('${exam.id}')" class="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700">Delete</button>
-                </div>
-              </div>
-            </div>
-          `;
-        }).join('');
-      } catch (err) {
-        console.error('Load exams error:', err);
-        document.getElementById('exams-container').innerHTML = '<div class="text-center py-4 text-red-600">Failed to load exams</div>';
-      }
-    }
-
-    // View exam analytics
-    window.viewExamAnalytics = (examId) => {
-      window.location.href = `/quizAnalytics.html?id=${examId}`;
-    };
-
-    // Edit exam
-    window.editExam = (examId) => {
-      window.location.href = `/examCreate.html?courseId=${courseId}&examId=${examId}`;
-    };
-
-    // Delete exam
-    window.deleteExam = async (examId) => {
-      if (!confirm('Delete this exam? This will delete all questions and student attempts.')) return;
-
-      try {
-        const token = sessionStorage.getItem('token');
-        const response = await fetch(`/api/exams/${examId}`, {
-          method: 'DELETE',
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-
-        if (!response.ok) throw new Error('Failed to delete exam');
-
-        window.Notifications.success('Exam deleted');
-        await loadExams();
-      } catch (err) {
-        console.error('Delete exam error:', err);
-        window.Notifications.error('Failed to delete exam');
-      }
-    };
-
     // Load on page load
-    document.addEventListener('DOMContentLoaded', async () => {
-      await loadCourse();
-      await loadExams();
-    });
+    document.addEventListener('DOMContentLoaded', loadCourse);
   </script>
 </body>
 </html>
