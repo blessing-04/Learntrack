@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LearnTrack — Course</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/theme.css" />
+</head>
+<body class="antialiased text-gray-900 bg-gray-50">
+  <header class="header-sticky bg-white" id="header">
+    <nav class="max-w-7xl mx-auto px-6 py-4">
+      <div class="flex items-center justify-between">
+        <a href="/landing.html" class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">LearnTrack</a>
+        <div class="hidden md:flex items-center gap-6">
+          <a href="/browse.html" class="nav-link text-gray-700 hover:text-indigo-600 font-medium">Browse</a>
+          <a href="/auth.html" class="nav-link text-gray-700 hover:text-indigo-600 font-medium">Sign In</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <section class="lg:col-span-2">
+      <div class="video-placeholder rounded-2xl mb-4" style="height: 420px;"></div>
+      <h1 class="text-2xl font-bold mb-1">Advanced React Patterns</h1>
+      <div class="flex items-center gap-3 text-sm text-gray-600 mb-4">
+        <span>By <a class="text-indigo-600" href="#"></a></span>
+        <span>•</span>
+        <span>4.8<svg class="inline-block w-4 h-4 fill-current" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> (2,341)</span>
+        <span>•</span>
+        <span>12h total</span>
+      </div>
+
+      <div class="bg-white rounded-xl shadow p-4">
+        <div class="flex gap-3 border-b mb-4">
+          <button class="tab-active px-4 py-2 rounded-t-lg font-semibold">Overview</button>
+          <button class="px-4 py-2 hover:bg-gray-100 rounded-t-lg font-semibold">Resources</button>
+          <button class="px-4 py-2 hover:bg-gray-100 rounded-t-lg font-semibold">Quizzes</button>
+          <button class="px-4 py-2 hover:bg-gray-100 rounded-t-lg font-semibold">Discussion</button>
+        </div>
+        <div>
+          <h3 class="font-bold mb-2">What you'll learn</h3>
+          <ul class="list-disc list-inside text-gray-700 space-y-1 mb-4">
+            <li>Render props, HOCs, Compound Components</li>
+            <li>Context patterns & performance</li>
+            <li>State machines, reducers, and testing</li>
+          </ul>
+
+          <div class="bg-gray-50 p-4 rounded-lg mb-4">
+            <h4 class="font-bold mb-1">Quiz sample</h4>
+            <p class="text-sm text-gray-700">Q1: What's the main benefit of compound components?</p>
+            <div class="mt-2 flex flex-col gap-2 text-sm">
+              <label class="flex items-center gap-2"><input type="radio" name="q1"/> Better state encapsulation</label>
+              <label class="flex items-center gap-2"><input type="radio" name="q1"/> Smaller bundle size</label>
+              <label class="flex items-center gap-2"><input type="radio" name="q1"/> Faster hydration</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="lg:col-span-1 space-y-4">
+      <div class="bg-white rounded-xl shadow p-4">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-2xl font-bold text-indigo-600">R39</span>
+          <span class="px-2 py-1 text-xs bg-green-100 text-green-700 rounded">Bestseller</span>
+        </div>
+        <button id="enroll-btn" class="w-full btn-primary bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold py-3 rounded-lg mb-3">Enroll Now</button>
+        <button id="access-btn" class="hidden w-full btn-primary bg-green-600 text-white font-semibold py-3 rounded-lg mb-3">Access Course</button>
+        <p id="enrolled-message" class="hidden text-sm text-green-600 font-semibold mb-3"><svg class="inline-block w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Already enrolled</p>
+        <p class="text-sm text-gray-600">30-day money-back guarantee</p>
+      </div>
+
+      <div class="bg-white rounded-xl shadow p-4">
+        <h3 class="font-bold mb-3">Course Content</h3>
+        <div class="space-y-2 text-sm">
+          <div class="p-3 rounded-lg border">1. Introduction (3 lectures)</div>
+          <div class="p-3 rounded-lg border">2. Patterns (10 lectures)</div>
+          <div class="p-3 rounded-lg border">3. Testing (6 lectures)</div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow p-4">
+        <h3 class="font-bold mb-3">Certificate</h3>
+        <p class="text-sm text-gray-700 mb-2">Finish all lessons and pass the final quiz to earn a digital certificate you can share to LinkedIn.</p>
+        <button class="px-3 py-2 border rounded-lg text-sm">Preview Certificate</button>
+      </div>
+    </aside>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/supabaseClient.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    const API_BASE = window.__API_BASE || 'http://localhost:5000';
+    const params = new URLSearchParams(location.search);
+    const courseId = params.get('id');
+
+    async function getToken() {
+      try { const { data } = await supabase.auth.getSession(); return data.session?.access_token || null; } catch { return null; }
+    }
+
+    function setText(sel, text) {
+      const el = document.querySelector(sel); if (el) el.textContent = text;
+    }
+
+    function renderOutline(outline) {
+      const aside = document.querySelector('aside .bg-white.rounded-xl.shadow.p-4:nth-of-type(2) .space-y-2');
+      if (!aside) return;
+      if (!outline || !outline.length) { aside.innerHTML = '<div class="p-3 rounded-lg border text-sm text-gray-600">No content yet.</div>'; return; }
+      aside.innerHTML = outline.map((s, i) => `
+        <div class="p-3 rounded-lg border">${i+1}. ${s.title} (${(s.lessons||[]).length} lectures)</div>
+      `).join('');
+    }
+
+    let currentCourse = null;
+
+    async function checkEnrollment() {
+      const token = await getToken();
+      if (!token || !courseId) return { enrolled: false, purchased: false };
+
+      try {
+        const res = await window.apiFetch(`${API_BASE}/api/payments/check-enrollment/${courseId}`);
+        return await res.json();
+      } catch {
+        return { enrolled: false, purchased: false };
+      }
+    }
+
+    async function handleEnroll() {
+      const token = await getToken();
+      if (!token) {
+        alert('Please sign in to enroll');
+        window.location.href = '/signIn.html';
+        return;
+      }
+
+      if (!currentCourse) return;
+
+      const enrollBtn = document.getElementById('enroll-btn');
+      enrollBtn.disabled = true;
+      enrollBtn.textContent = 'Processing...';
+
+      try {
+        // If free course, enroll directly
+        if (!currentCourse.price_cents || currentCourse.price_cents === 0) {
+          const res = await window.apiFetch(`${API_BASE}/api/enrollments/${courseId}`, {
+            method: 'POST'
+          });
+          if (res.ok) {
+            alert('Enrolled successfully!');
+            location.reload();
+          } else {
+            throw new Error('Enrollment failed');
+          }
+          return;
+        }
+
+        // Paid course - create Stripe checkout
+        const res = await window.apiFetch(`${API_BASE}/api/payments/create-checkout-session`, {
+          method: 'POST',
+          body: JSON.stringify({ courseId })
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || 'Payment failed');
+        }
+
+        // Redirect to Stripe checkout
+        window.location.href = data.url;
+      } catch (err) {
+        console.error('Enroll error:', err);
+        alert(err.message || 'Something went wrong');
+        enrollBtn.disabled = false;
+        enrollBtn.textContent = 'Enroll Now';
+      }
+    }
+
+    async function load() {
+      if (!courseId) return;
+      const token = await getToken();
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      const [cRes, oRes, enrollment] = await Promise.all([
+        window.apiFetch(`${API_BASE}/api/courses/${courseId}`),
+        window.apiFetch(`${API_BASE}/api/courses/${courseId}/outline`),
+        checkEnrollment()
+      ]);
+      const { data: course } = await cRes.json();
+      const { data: outline } = await oRes.json();
+      currentCourse = course;
+
+      if (course) {
+        setText('main h1', course.title);
+        const priceEl = document.querySelector('aside span.text-2xl');
+        if (priceEl) priceEl.textContent = (course.price_cents||0) ? `$${(course.price_cents/100).toFixed(0)}` : 'Free';
+      }
+      renderOutline(outline);
+
+      // Handle enrollment status
+      const enrollBtn = document.getElementById('enroll-btn');
+      const accessBtn = document.getElementById('access-btn');
+      const enrolledMsg = document.getElementById('enrolled-message');
+
+      if (enrollment.purchased || enrollment.enrolled) {
+        enrollBtn.classList.add('hidden');
+        accessBtn.classList.remove('hidden');
+        enrolledMsg.classList.remove('hidden');
+        accessBtn.onclick = () => window.location.href = `/studentDashboard.html`;
+      } else {
+        enrollBtn.onclick = handleEnroll;
+      }
+    }
+
+    load();
+  </script>
+</body>
+</html>

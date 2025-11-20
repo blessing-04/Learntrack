@@ -1,0 +1,65 @@
+/* Shared theme styles extracted from landing.html to keep consistent look */
+* { scroll-behavior: smooth; }
+
+/* Animated gradient for hero */
+.hero-gradient {
+  background: linear-gradient(135deg, rgba(99,102,241,0.95), rgba(168,85,247,0.9) 50%, rgba(236,72,153,0.85) 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 15s ease infinite;
+}
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Floating blobs */
+.blob { position: absolute; border-radius: 50%; filter: blur(40px); opacity: 0.15; animation: float 8s ease-in-out infinite; }
+.blob1 { width: 300px; height: 300px; left: -50px; top: -50px; background: rgba(255,255,255,0.2); animation-duration: 10s; }
+.blob2 { width: 200px; height: 200px; right: -30px; top: 80px; background: rgba(255,255,255,0.15); animation-duration: 8s; }
+.blob3 { width: 150px; height: 150px; left: 25%; top: 180px; background: rgba(255,255,255,0.1); animation-duration: 12s; }
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(20px, -20px) scale(1.05); }
+  66% { transform: translate(-20px, 20px) scale(0.95); }
+}
+
+/* Card animations */
+.fade-up { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+
+/* Hover effects */
+.card-hover { transition: all 0.3s ease; }
+.card-hover:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,0.12); }
+
+.nav-link { position: relative; transition: color 0.3s ease; }
+.nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: currentColor; transition: width 0.3s ease; }
+.nav-link:hover::after { width: 100%; }
+
+/* Button effects */
+.btn-primary { position: relative; overflow: hidden; transition: all 0.3s ease; }
+.btn-primary::before { content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; border-radius: 50%; background: rgba(255,255,255,0.2); transform: translate(-50%, -50%); transition: width 0.6s ease, height 0.6s ease; }
+.btn-primary:hover::before { width: 300px; height: 300px; }
+.btn-primary:hover { transform: scale(1.05); }
+
+/* Sticky header */
+.header-sticky { position: sticky; top: 0; z-index: 50; transition: all 0.3s ease; backdrop-filter: blur(10px); }
+.header-scrolled { background: rgba(255,255,255,0.95); box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+
+/* Stats counter pulse */
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
+.stat-pulse { animation: pulse 2s ease-in-out infinite; }
+
+/* Course card shine effect */
+.shine { position: relative; overflow: hidden; }
+.shine::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); transition: left 0.5s ease; }
+.shine:hover::before { left: 100%; }
+
+/* Mobile menu animation */
+.mobile-menu { transform: translateX(100%); transition: transform 0.3s ease; }
+.mobile-menu.open { transform: translateX(0); }
+
+/* Utility */
+.video-placeholder { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); position: relative; overflow: hidden; }
+.video-placeholder::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; }
+.video-placeholder::after { content: '▶'; position: absolute; top: 50%; left: 50%; transform: translate(-40%, -50%); font-size: 32px; color: white; }

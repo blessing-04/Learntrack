@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LearnHub — Sign In</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/theme.css" />
+  <script src="/js/notifications.js"></script>
+</head>
+<body class="antialiased text-gray-900 bg-white">
+  <!-- Header -->
+  <header class="header-sticky bg-white/80" id="header">
+    <nav class="max-w-7xl mx-auto px-6 py-4">
+      <div class="flex items-center justify-between">
+        <a href="/landing.html" class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">LearnTrack</a>
+        <button id="mobile-menu-btn" class="md:hidden p-2 hover:bg-gray-100 rounded-lg"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+      </div>
+      <div id="mobile-menu" class="mobile-menu fixed top-0 right-0 h-full w-64 bg-white shadow-2xl md:hidden p-6 z-50">
+        <button id="close-menu" class="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-lg"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="relative overflow-hidden">
+    <div class="hero-gradient text-white py-16 px-6">
+      <div class="blob blob1"></div><div class="blob blob2"></div><div class="blob blob3"></div>
+      <div class="max-w-4xl mx-auto relative z-10 text-center">
+        <h1 class="text-4xl md:text-5xl font-extrabold mb-3">Welcome Back</h1>
+        <p class="text-white/90">Sign in to continue learning</p>
+      </div>
+    </div>
+  </section>
+  <br><br><br>
+  <!-- Sign In Form -->
+  <main class="max-w-md mx-auto px-6 -mt-12">
+    <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+      <h2 class="text-xl font-bold mb-4">Sign In</h2>
+      <form id="signin-form" class="space-y-4">
+        <div>
+          <label class="block text-sm font-semibold mb-1">Email</label>
+          <input id="signin-email" type="email" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500" required />
+        </div>
+        <div>
+          <label class="block text-sm font-semibold mb-1">Password</label>
+          <input id="signin-password" type="password" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500" required />
+        </div>
+        <button class="w-full btn-primary bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold py-3 rounded-lg">Sign In</button>
+      </form>
+      <div class="my-4 flex items-center gap-4">
+        <div class="flex-1 h-px bg-gray-200"></div><span class="text-xs text-gray-500"></span><div class="flex-1 h-px bg-gray-200"></div>
+      </div>
+      <p class="text-sm mt-4">Don’t have an account? <a href="signUp.html" class="text-indigo-600 font-semibold">Sign Up</a></p>
+    </div>
+  </main>
+   <footer class="bg-gray-900 text-white mt-20">
+    <div class="max-w-7xl mx-auto px-6 py-12">
+      <!-- Bottom Bar -->
+      <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        <p class="text-gray-400 text-sm">&copy; <span id="year"></span> LearnTrack. All rights reserved.</p>
+        <div class="flex gap-6 text-sm text-gray-400">
+          <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+          <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+          <a href="#" class="hover:text-white transition-colors">Cookie Policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/js/app.js"></script>
+  <script>
+   const signinForm = document.getElementById('signin-form');
+
+signinForm?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('signin-email').value;
+  const password = document.getElementById('signin-password').value;
+
+  try {
+    const response = await fetch("http://localhost:5000/api/signin", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await response.json();
+    
+    console.log("📥 Response status:", response.status);
+    console.log("📦 Response data:", data);
+    console.log("🔑 Token in response:", data.token ? 'YES (length: ' + data.token.length + ')' : 'NO - MISSING!');
+    
+    // Check if payment is required (403 status for unpaid instructors)
+    if (response.status === 403 && data.paymentRequired) {
+      window.Notifications.error(data.message || "Payment required");
+      setTimeout(() => {
+        window.location.href = data.redirectUrl;
+      }, 2000);
+      return;
+    }
+    
+    if (!response.ok) {
+      window.Notifications.error(data.error || "Signin failed");
+      return;
+    }
+
+    // Check if token exists in response
+    if (!data.token) {
+      console.error("❌ CRITICAL: Backend did not return a token!");
+      window.Notifications.error("Sign in failed: No authentication token received");
+      return;
+    }
+
+    // Store session data in sessionStorage (all keys for compatibility)
+    console.log("Storing session data in sessionStorage...");
+    sessionStorage.setItem('token', data.token);
+    sessionStorage.setItem('auth_token', data.token);
+    sessionStorage.setItem('supabase_token', data.token);
+    sessionStorage.setItem('role', data.role);
+    sessionStorage.setItem('user_role', data.role);
+    sessionStorage.setItem('email', email);
+    sessionStorage.setItem('user_email', email);
+    
+    // Get user ID from token (decode JWT to get user ID)
+    try {
+      const tokenParts = data.token.split('.');
+      const payload = JSON.parse(atob(tokenParts[1]));
+      if (payload.sub) {
+        sessionStorage.setItem('user_id', payload.sub);
+      }
+    } catch (e) {
+      console.warn('Could not extract user ID from token');
+    }
+
+    console.log("Token stored:", data.token ? 'YES (length: ' + data.token.length + ')' : 'NO');
+    console.log("Role:", data.role);
+    console.log("All sessionStorage keys:", Object.keys(sessionStorage));
+    const dashboardUrl = data.role === 'instructor' ? '/instructorDashboard.html' : '/studentDashboard.html';
+    console.log("🔄 Redirecting to:", dashboardUrl);
+    window.location.href = dashboardUrl;
+
+  } catch (err) {
+    console.error("Signin error", err);
+    window.Notifications.error("Something went wrong. Please try again.");
+  }
+});
+
+  </script>
+</body>
+</html>

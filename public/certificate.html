@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certificate - LearnTrack</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/theme.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap');
+    
+    .certificate-container {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    .certificate-paper {
+      background: #ffffff;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      position: relative;
+    }
+    
+    .certificate-border {
+      border: 3px solid #d4af37;
+      border-radius: 4px;
+    }
+    
+    .ornament {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      opacity: 0.1;
+    }
+    
+    .ornament-tl { top: 20px; left: 20px; }
+    .ornament-tr { top: 20px; right: 20px; transform: rotate(90deg); }
+    .ornament-bl { bottom: 20px; left: 20px; transform: rotate(-90deg); }
+    .ornament-br { bottom: 20px; right: 20px; transform: rotate(180deg); }
+    
+    .certificate-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      font-weight: 700;
+      color: #2d3748;
+      letter-spacing: 2px;
+    }
+    
+    .student-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #667eea;
+      border-bottom: 2px solid #d4af37;
+      display: inline-block;
+      padding: 0 30px 10px;
+    }
+    
+    .seal {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #d4af37 0%, #c4972f 100%);
+      border: 4px solid #b8860b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    
+    .seal-inner {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    
+    @media print {
+      .no-print { display: none !important; }
+      body { background: white; }
+      .certificate-container { background: white; padding: 0; }
+    }
+  </style>
+</head>
+<body class="certificate-container min-h-screen py-8 px-4">
+  
+  <!-- Header (No Print) -->
+  <div class="no-print max-w-6xl mx-auto mb-6 flex justify-between items-center">
+    <a href="/studentDashboard.html" class="text-white hover:text-gray-200 font-semibold">
+      ← Back to Dashboard
+    </a>
+    <div class="flex gap-3">
+      <button onclick="window.print()" class="px-6 py-2 bg-white text-purple-600 rounded-lg font-semibold hover:bg-gray-100 flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+        </svg>
+        Print
+      </button>
+      <button onclick="downloadCertificate()" class="px-6 py-2 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600 flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3 3m0 0l-3-3m3 3V10"></path>
+        </svg>
+        Download PDF
+      </button>
+      <button onclick="shareOnLinkedIn()" class="px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 flex items-center gap-2">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+        </svg>
+        Share on LinkedIn
+      </button>
+    </div>
+  </div>
+
+  <!-- Certificate -->
+  <div class="max-w-6xl mx-auto">
+    <div class="certificate-paper p-16 certificate-border relative">
+      
+      <!-- Ornamental Corners -->
+      <svg class="ornament ornament-tl" viewBox="0 0 100 100">
+        <path d="M0,0 Q50,0 50,50 Q50,0 100,0" fill="#d4af37"/>
+        <path d="M0,0 Q0,50 50,50 Q0,50 0,100" fill="#d4af37"/>
+      </svg>
+      <svg class="ornament ornament-tr" viewBox="0 0 100 100">
+        <path d="M0,0 Q50,0 50,50 Q50,0 100,0" fill="#d4af37"/>
+        <path d="M0,0 Q0,50 50,50 Q0,50 0,100" fill="#d4af37"/>
+      </svg>
+      <svg class="ornament ornament-bl" viewBox="0 0 100 100">
+        <path d="M0,0 Q50,0 50,50 Q50,0 100,0" fill="#d4af37"/>
+        <path d="M0,0 Q0,50 50,50 Q0,50 0,100" fill="#d4af37"/>
+      </svg>
+      <svg class="ornament ornament-br" viewBox="0 0 100 100">
+        <path d="M0,0 Q50,0 50,50 Q50,0 100,0" fill="#d4af37"/>
+        <path d="M0,0 Q0,50 50,50 Q0,50 0,100" fill="#d4af37"/>
+      </svg>
+
+      <!-- Header -->
+      <div class="text-center mb-8">
+        <div class="text-purple-600 text-xl font-semibold mb-2">LearnTrack Academy</div>
+        <h1 class="certificate-title mb-2">Certificate of Completion</h1>
+        <div class="h-1 w-32 bg-gradient-to-r from-purple-600 to-blue-500 mx-auto rounded"></div>
+      </div>
+
+      <!-- Body -->
+      <div class="text-center mb-8">
+        <p class="text-gray-600 text-lg mb-6">This is to certify that</p>
+        <div class="student-name mb-8" id="student-name">Loading...</div>
+        
+        <p class="text-gray-600 text-lg mb-4">has successfully completed the course</p>
+        <h2 class="text-3xl font-bold text-gray-800 mb-6" id="course-title">Loading...</h2>
+        
+        <p class="text-gray-600 mb-6">with a final score of <span class="text-purple-600 font-bold text-xl" id="final-score">--</span>%</p>
+      </div>
+
+      <!-- Footer -->
+      <div class="flex justify-between items-end mt-16">
+        <!-- Date and Certificate Number -->
+        <div class="text-left">
+          <div class="mb-4">
+            <div class="text-sm text-gray-500 mb-1">Issue Date</div>
+            <div class="text-gray-800 font-semibold" id="issue-date">--</div>
+          </div>
+          <div>
+            <div class="text-sm text-gray-500 mb-1">Certificate ID</div>
+            <div class="text-gray-800 font-mono text-sm" id="cert-number">--</div>
+          </div>
+        </div>
+
+        <!-- Seal -->
+        <div class="seal">
+          <div class="seal-inner">
+            <svg class="w-10 h-10 text-white mb-1" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+            </svg>
+            <div class="text-white text-xs font-bold">VERIFIED</div>
+          </div>
+        </div>
+
+        <!-- Signature -->
+        <div class="text-right">
+          <div class="border-t-2 border-gray-800 pt-2 mb-2" style="min-width: 200px;">
+            <img id="signature-image" src="" alt="Signature" style="max-height: 60px; margin: 0 auto; display: none;">
+            <div class="text-gray-800 font-semibold" id="signatory-name">Dean of Education</div>
+          </div>
+          <div class="text-sm text-gray-500" id="signatory-title">LearnTrack Academy</div>
+        </div>
+      </div>
+
+      <!-- Verification Footer -->
+      <div class="text-center mt-12 pt-6 border-t border-gray-300">
+        <p class="text-xs text-gray-500">
+          Verify this certificate at: <span class="text-purple-600 font-mono" id="verify-url">--</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/notifications.js"></script>
+  <script>
+    const API_BASE = 'http://localhost:5000';
+    const params = new URLSearchParams(window.location.search);
+    const certificateId = params.get('id');
+
+    // Get token
+    function getToken() {
+      return sessionStorage.getItem('token') || sessionStorage.getItem('auth_token');
+    }
+
+    // Load certificate
+    async function loadCertificate() {
+      try {
+        const token = getToken();
+        if (!token) {
+          window.Notifications.error('Please sign in to view certificate');
+          setTimeout(() => window.location.href = '/signIn.html', 1500);
+          return;
+        }
+
+        if (!certificateId) {
+          window.Notifications.error('Invalid certificate link');
+          setTimeout(() => window.location.href = '/studentDashboard.html', 1500);
+          return;
+        }
+
+        const response = await fetch(`${API_BASE}/api/certificates/${certificateId}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to load certificate');
+        }
+
+        const { data: certificate } = await response.json();
+        displayCertificate(certificate);
+      } catch (err) {
+        console.error('Load certificate error:', err);
+        window.Notifications.error('Failed to load certificate');
+        setTimeout(() => window.location.href = '/studentDashboard.html', 2000);
+      }
+    }
+
+    // Display certificate
+    function displayCertificate(cert) {
+      document.getElementById('student-name').textContent = cert.profiles.full_name;
+      document.getElementById('course-title').textContent = cert.courses.title;
+      document.getElementById('final-score').textContent = cert.final_score?.toFixed(1) || '100.0';
+      
+      // Parse and format issue date (try multiple date fields)
+      const dateString = cert.issued_at || cert.created_at || new Date().toISOString();
+      const issueDate = new Date(dateString);
+
+      if (!isNaN(issueDate.getTime())) {
+        document.getElementById('issue-date').textContent = issueDate.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+      } else {
+        // Fallback if date parsing fails
+        document.getElementById('issue-date').textContent = new Date().toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+      }
+      
+      document.getElementById('cert-number').textContent = cert.certificate_number;
+
+      // Load signature from localStorage
+      loadSignature();
+
+      document.getElementById('verify-url').textContent =
+        `learntrack.com/verify/${cert.certificate_number}`;
+
+      // Update page title
+      document.title = `Certificate - ${cert.courses.title}`;
+    }
+
+    // Load signature from localStorage
+    function loadSignature() {
+      const signatureData = localStorage.getItem('certificate_signature');
+      const signatoryName = localStorage.getItem('certificate_signatory_name');
+      const signatoryTitle = localStorage.getItem('certificate_signatory_title');
+
+      if (signatureData) {
+        const img = document.getElementById('signature-image');
+        img.src = signatureData;
+        img.style.display = 'block';
+      }
+
+      if (signatoryName) {
+        document.getElementById('signatory-name').textContent = signatoryName;
+      }
+
+      if (signatoryTitle) {
+        document.getElementById('signatory-title').textContent = signatoryTitle;
+      }
+    }
+
+    // Download certificate as PDF
+    function downloadCertificate() {
+      window.Notifications.info('PDF download feature coming soon!');
+      // TODO: Implement PDF generation using html2pdf or similar
+      // For now, user can use browser print to PDF
+      window.print();
+    }
+
+    // Share on LinkedIn
+    function shareOnLinkedIn() {
+      const certNumber = document.getElementById('cert-number').textContent;
+      const courseName = document.getElementById('course-title').textContent;
+      
+      const linkedInUrl = `https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=${encodeURIComponent(courseName)}&organizationName=${encodeURIComponent('LearnTrack Academy')}&issueYear=${new Date().getFullYear()}&issueMonth=${new Date().getMonth() + 1}&certUrl=${encodeURIComponent(window.location.href)}&certId=${encodeURIComponent(certNumber)}`;
+      
+      window.open(linkedInUrl, '_blank');
+    }
+
+    // Load on page load
+    loadCertificate();
+  </script>
+</body>
+</html>

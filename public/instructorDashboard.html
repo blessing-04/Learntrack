@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LearnTrack — Instructor Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/theme.css" />
+  <script src="/js/notifications.js"></script>
+  <script src="/js/auth-helper.js"></script>
+</head>
+<body class="antialiased text-gray-900 bg-gray-50">
+  <header class="header-sticky bg-white" id="header">
+    <nav class="max-w-7xl mx-auto px-6 py-4">
+      <div class="flex items-center justify-between">
+        <a href="/landing.html" class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">LearnTrack</a>
+        <div class="hidden md:flex items-center gap-6">
+          <a href="/courseCreate.html" class="nav-link text-gray-700 hover:text-indigo-600 font-medium">Create Course</a>
+          <a href="/instructorProfile.html" class="nav-link text-gray-700 hover:text-indigo-600 font-medium">Profile</a>
+          <button id="signout" class="px-4 py-2 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition-colors">Sign Out</button>
+        </div>
+        <button id="mobile-menu-btn" class="md:hidden p-2 hover:bg-gray-100 rounded-lg"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="max-w-7xl mx-auto p-6 space-y-6">
+    <section class="hero-gradient rounded-2xl p-8 text-white">
+      <h1 class="text-3xl font-bold mb-2">Instructor Dashboard</h1>
+      <p class="text-white/90">Manage your courses, track earnings, and engage students</p>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+        <div class="bg-white/20 backdrop-blur-sm rounded-lg p-4"><p class="text-sm">Total Courses</p><p id="stat-courses" class="text-2xl font-bold">0</p></div>
+        <div class="bg-white/20 backdrop-blur-sm rounded-lg p-4"><p class="text-sm">Published</p><p id="stat-published" class="text-2xl font-bold">0</p></div>
+        <div class="bg-white/20 backdrop-blur-sm rounded-lg p-4"><p class="text-sm">Drafts</p><p id="stat-drafts" class="text-2xl font-bold">0</p></div>
+        <div class="bg-white/20 backdrop-blur-sm rounded-lg p-4"><p class="text-sm">Avg Rating</p><p id="stat-rating" class="text-2xl font-bold">-</p></div>
+      </div>
+    </section>
+
+    <section class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-bold">Your Courses</h2>
+        <a href="/courseCreate.html" class="px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold">New Course</a>
+      </div>
+      <div id="courses-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Courses will be loaded here -->
+        <div class="col-span-full text-center py-8 text-gray-500">Loading courses...</div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/supabaseClient.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    // Sign out handler
+    document.getElementById('signout')?.addEventListener('click', async () => {
+      try {
+        // Clear session storage
+        sessionStorage.clear();
+        
+        // Sign out from Supabase if available
+        if (window.supabase) {
+          await window.supabase.auth.signOut();
+        }
+        
+        // Redirect to landing page
+        window.location.href = '/landing.html';
+      } catch (err) {
+        console.error('Sign out error:', err);
+        // Clear storage anyway and redirect
+        sessionStorage.clear();
+        window.location.href = '/landing.html';
+      }
+    });
+
+    // Load instructor courses
+    async function loadCourses() {
+      try {
+        const token = window.AuthHelper ? window.AuthHelper.getToken() : sessionStorage.getItem('token');
+        if (!token) {
+          window.location.href = '/signIn.html';
+          return;
+        }
+
+        const response = await fetch('/api/course-management/my-courses', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to load courses');
+        }
+
+        const { data: courses } = await response.json();
+        console.log('Loaded courses:', courses);
+
+        // Update stats
+        const publishedCount = courses.filter(c => c.is_published).length;
+        const draftCount = courses.filter(c => !c.is_published).length;
+        const avgRating = courses.length > 0 
+          ? (courses.reduce((sum, c) => sum + (c.rating || 0), 0) / courses.length).toFixed(1)
+          : '-';
+
+        document.getElementById('stat-courses').textContent = courses.length;
+        document.getElementById('stat-published').textContent = publishedCount;
+        document.getElementById('stat-drafts').textContent = draftCount;
+        
+        // Set rating with star icon
+        const ratingEl = document.getElementById('stat-rating');
+        if (avgRating === '-' || avgRating === '0.0') {
+          ratingEl.textContent = '-';
+        } else {
+          ratingEl.innerHTML = avgRating + ' <svg class="inline-block w-4 h-4 fill-yellow-400 ml-1" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>';
+        }
+
+        // Render courses
+        const container = document.getElementById('courses-container');
+        
+        if (courses.length === 0) {
+          container.innerHTML = `
+            <div class="col-span-full text-center py-12">
+              <p class="text-gray-500 mb-4">You haven't created any courses yet.</p>
+              <a href="/courseCreate.html" class="inline-block px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700">
+                Create Your First Course
+              </a>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = courses.map((course, index) => {
+          const gradients = [
+            'from-indigo-400 to-purple-600',
+            'from-blue-400 to-blue-600',
+            'from-pink-400 to-rose-600',
+            'from-green-400 to-emerald-600',
+            'from-orange-400 to-red-600',
+            'from-yellow-400 to-orange-600'
+          ];
+          const gradient = gradients[index % gradients.length];
+          const price = course.price_cents > 0 ? `R${(course.price_cents / 100).toFixed(2)}` : 'Free';
+          const statusClass = course.is_published 
+            ? 'bg-green-100 text-green-700' 
+            : 'bg-yellow-100 text-yellow-700';
+          const statusText = course.is_published ? 'Published' : 'Draft';
+
+          return `
+            <article class="card-hover bg-white rounded-xl border shadow p-4">
+              <div class="h-32 shine bg-gradient-to-br ${gradient} rounded-lg mb-3 flex items-center justify-center text-white text-xl font-bold">
+                ${course.title.substring(0, 2).toUpperCase()}
+              </div>
+              <h3 class="font-bold mb-1 line-clamp-1" title="${course.title}">${course.title}</h3>
+              <p class="text-sm text-gray-600 mb-2">${course.category} • ${course.level}</p>
+              <p class="text-sm font-semibold text-indigo-600 mb-3">${price}</p>
+              <div class="mt-3 flex items-center justify-between">
+                <a href="/courseManage.html?id=${course.id}" class="text-indigo-600 font-semibold hover:underline">Manage</a>
+                <span class="px-2 py-1 text-xs ${statusClass} rounded">${statusText}</span>
+              </div>
+            </article>
+          `;
+        }).join('');
+
+      } catch (err) {
+        console.error('Failed to load courses:', err);
+        document.getElementById('courses-container').innerHTML = `
+          <div class="col-span-full text-center py-8 text-red-500">
+            Failed to load courses. Please refresh the page.
+          </div>
+        `;
+      }
+    }
+
+    // Load courses on page load
+    document.addEventListener('DOMContentLoaded', loadCourses);
+  </script>
+</body>
+</html>

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Take Quiz — LearnTrack</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/theme.css" />
+  <script src="/js/notifications.js"></script>
+  <script src="/js/auth-helper.js"></script>
+</head>
+<body class="antialiased text-gray-900 bg-gray-50">
+  <!-- Header -->
+  <header class="header-sticky bg-white" id="header">
+    <nav class="max-w-7xl mx-auto px-6 py-4">
+      <div class="flex items-center justify-between">
+        <a href="/landing.html" class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">LearnTrack</a>
+        <div class="flex items-center gap-4">
+          <button id="back-btn" class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
+            ← Back to Course
+          </button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="max-w-4xl mx-auto p-6">
+    <!-- Quiz Header -->
+    <section id="quiz-header" class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+      <div class="flex items-start justify-between mb-4">
+        <div class="flex-1">
+          <h1 id="quiz-title" class="text-2xl font-bold mb-2">Loading Quiz...</h1>
+          <div class="flex items-center gap-4 text-sm text-gray-600">
+            <span id="quiz-points" class="flex items-center gap-1">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              Points: <span class="font-semibold">0</span>
+            </span>
+            <span id="quiz-attempts">Attempt: <span class="font-semibold">1</span></span>
+            <span id="quiz-time" class="hidden">
+              Time Left: <span class="font-semibold text-orange-600">--:--</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timer Bar (if timed) -->
+      <div id="timer-bar" class="hidden">
+        <div class="w-full bg-gray-200 rounded-full h-2">
+          <div id="timer-progress" class="bg-indigo-600 h-2 rounded-full transition-all" style="width: 100%"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quiz Instructions (before starting) -->
+    <section id="quiz-instructions" class="bg-white rounded-2xl shadow-lg p-8">
+      <div class="text-center mb-6">
+        <svg class="w-16 h-16 mx-auto mb-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+        <h2 class="text-xl font-bold mb-2">Ready to Start?</h2>
+        <p class="text-gray-600">Read the instructions carefully before beginning</p>
+      </div>
+
+      <div id="quiz-info" class="bg-gray-50 rounded-lg p-6 mb-6">
+        <h3 class="font-bold mb-3">Quiz Information</h3>
+        <ul class="space-y-2 text-sm text-gray-700">
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span>Answer all questions to the best of your ability</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span>You can review and change your answers before submitting</span>
+          </li>
+          <li id="retake-info" class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span>Retakes are allowed</span>
+          </li>
+          <li id="passing-info" class="flex items-start gap-2 hidden">
+            <svg class="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+            </svg>
+            <span>Passing score: <span class="font-semibold" id="passing-score-value">70%</span></span>
+          </li>
+        </ul>
+      </div>
+
+      <div id="previous-attempts" class="hidden mb-6">
+        <h3 class="font-bold mb-3">Your Previous Attempts</h3>
+        <div id="attempts-list" class="space-y-2"></div>
+      </div>
+
+      <button id="start-quiz-btn" class="w-full btn-primary bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold py-4 rounded-lg text-lg hover:shadow-xl transition-all">
+        Start Quiz
+      </button>
+    </section>
+
+    <!-- Quiz Content (hidden initially) -->
+    <section id="quiz-content" class="hidden bg-white rounded-2xl shadow-lg p-8">
+      <form id="quiz-form">
+        <!-- Question -->
+        <div class="mb-6">
+          <label class="block text-lg font-bold mb-4" id="question-text">
+            Question will appear here
+          </label>
+
+          <!-- Multiple Choice Options -->
+          <div id="mcq-options" class="space-y-3">
+            <!-- Options will be dynamically inserted -->
+          </div>
+
+          <!-- Text Answer (for essay/short answer - Phase 2) -->
+          <div id="text-answer" class="hidden">
+            <textarea id="answer-text" rows="6" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 resize-none" placeholder="Type your answer here..."></textarea>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="flex gap-4">
+          <button type="submit" class="flex-1 btn-primary bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold py-4 rounded-lg hover:shadow-xl transition-all">
+            Submit Quiz
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Loading State -->
+    <div id="loading" class="text-center py-12">
+      <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mb-4"></div>
+      <p class="text-gray-600">Loading quiz...</p>
+    </div>
+  </main>
+
+  <script>
+    const API_BASE = 'http://localhost:5000';
+    const params = new URLSearchParams(window.location.search);
+    const quizId = params.get('id');
+    const courseId = params.get('courseId');
+
+    let quizData = null;
+    let attemptData = null;
+    let startTime = null;
+    let timerInterval = null;
+
+    // Get token helper
+    function getToken() {
+      return window.AuthHelper ? window.AuthHelper.getToken() : 
+             sessionStorage.getItem('token') || 
+             sessionStorage.getItem('auth_token');
+    }
+
+    // Back button
+    document.getElementById('back-btn')?.addEventListener('click', () => {
+      if (courseId) {
+        window.location.href = `/courseView.html?id=${courseId}`;
+      } else {
+        window.location.href = '/studentDashboard.html';
+      }
+    });
+
+    // Load quiz
+    async function loadQuiz() {
+      try {
+        const token = getToken();
+        if (!token) {
+          window.location.href = '/signIn.html';
+          return;
+        }
+
+        const response = await fetch(`${API_BASE}/api/quizzes/${quizId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || 'Failed to load quiz');
+        }
+
+        const { data } = await response.json();
+        quizData = data.quiz;
+        
+        displayQuizInfo(data);
+        
+        document.getElementById('loading').classList.add('hidden');
+        document.getElementById('quiz-instructions').classList.remove('hidden');
+
+      } catch (err) {
+        console.error('Load quiz error:', err);
+        window.Notifications.error(err.message);
+        setTimeout(() => {
+          window.location.href = '/studentDashboard.html';
+        }, 2000);
+      }
+    }
+
+    // Display quiz information
+    function displayQuizInfo(data) {
+      const { quiz, previous_attempts, total_attempts } = data;
+
+      document.getElementById('quiz-title').textContent = quiz.question;
+      document.querySelector('#quiz-points span').textContent = quiz.points || 10;
+      document.querySelector('#quiz-attempts span').textContent = total_attempts + 1;
+
+      // Retake info
+      if (!quiz.allow_retakes) {
+        document.getElementById('retake-info').innerHTML = `
+          <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+          <span>Retakes are NOT allowed</span>
+        `;
+      }
+
+      // Passing score
+      if (quiz.passing_score) {
+        document.getElementById('passing-info').classList.remove('hidden');
+        document.getElementById('passing-score-value').textContent = quiz.passing_score + '%';
+      }
+
+      // Previous attempts
+      if (previous_attempts && previous_attempts.length > 0) {
+        document.getElementById('previous-attempts').classList.remove('hidden');
+        const attemptsList = document.getElementById('attempts-list');
+        attemptsList.innerHTML = previous_attempts.map(attempt => `
+          <div class="flex items-center justify-between bg-gray-50 rounded-lg p-3">
+            <span class="text-sm">Attempt ${attempt.attempt_number}</span>
+            <span class="text-sm font-semibold ${attempt.percentage >= (quiz.passing_score || 0) ? 'text-green-600' : 'text-red-600'}">
+              ${attempt.percentage}% ${attempt.status === 'submitted' ? '✓' : '⏳'}
+            </span>
+            <span class="text-xs text-gray-500">${new Date(attempt.submitted_at).toLocaleDateString()}</span>
+          </div>
+        `).join('');
+      }
+    }
+
+    // Start quiz
+    document.getElementById('start-quiz-btn')?.addEventListener('click', async () => {
+      try {
+        const token = getToken();
+        const response = await fetch(`${API_BASE}/api/quizzes/${quizId}/start`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || 'Failed to start quiz');
+        }
+
+        const { data } = await response.json();
+        attemptData = data;
+        startTime = Date.now();
+
+        // Show quiz content
+        document.getElementById('quiz-instructions').classList.add('hidden');
+        document.getElementById('quiz-content').classList.remove('hidden');
+
+        // Display question
+        displayQuestion();
+
+        window.Notifications.success('Quiz started! Good luck!');
+
+      } catch (err) {
+        console.error('Start quiz error:', err);
+        window.Notifications.error(err.message);
+      }
+    });
+
+    // Display question
+    function displayQuestion() {
+      document.getElementById('question-text').textContent = quizData.question;
+
+      if (quizData.quiz_type === 'multiple_choice' && quizData.options) {
+        const optionsContainer = document.getElementById('mcq-options');
+        const options = quizData.options;
+
+        optionsContainer.innerHTML = Object.keys(options).map(key => `
+          <label class="flex items-start gap-3 p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-indigo-500 hover:bg-indigo-50 transition-all">
+            <input type="radio" name="answer" value="${key}" class="mt-1 w-4 h-4 text-indigo-600" required>
+            <span class="flex-1 text-gray-700">${options[key]}</span>
+          </label>
+        `).join('');
+
+        optionsContainer.classList.remove('hidden');
+        document.getElementById('text-answer').classList.add('hidden');
+      } else {
+        // For other types (Phase 2)
+        document.getElementById('mcq-options').classList.add('hidden');
+        document.getElementById('text-answer').classList.remove('hidden');
+      }
+    }
+
+    // Submit quiz
+    document.getElementById('quiz-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      try {
+        const token = getToken();
+        const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+
+        let answer;
+        if (quizData.quiz_type === 'multiple_choice') {
+          const selectedOption = document.querySelector('input[name="answer"]:checked');
+          if (!selectedOption) {
+            window.Notifications.warning('Please select an answer');
+            return;
+          }
+          answer = { answer: selectedOption.value };
+        } else {
+          answer = { answer: document.getElementById('answer-text').value };
+        }
+
+        const response = await fetch(`${API_BASE}/api/quizzes/${quizId}/submit`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            attemptId: attemptData.id,
+            answers: answer,
+            timeSpent: timeSpent
+          })
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || 'Failed to submit quiz');
+        }
+
+        const { data, message } = await response.json();
+        
+        window.Notifications.success(message);
+        
+        // Redirect to results page
+        setTimeout(() => {
+          window.location.href = `/quizResults.html?attemptId=${data.id}&courseId=${courseId}`;
+        }, 1500);
+
+      } catch (err) {
+        console.error('Submit quiz error:', err);
+        window.Notifications.error(err.message);
+      }
+    });
+
+    // Initialize
+    if (quizId) {
+      loadQuiz();
+    } else {
+      window.Notifications.error('No quiz specified');
+      setTimeout(() => {
+        window.location.href = '/studentDashboard.html';
+      }, 2000);
+    }
+  </script>
+</body>
+</html>

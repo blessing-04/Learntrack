@@ -1,0 +1,95 @@
+LearnTrack - Final Project Structure
+====================================
+
+ROOT FILES:
+-----------
+.env                    - Environment variables (DO NOT COMMIT)
+.env.example           - Example environment file
+.gitignore             - Git ignore rules
+README.md              - Project documentation
+database-migration.sql - Database schema
+package.json           - Node.js dependencies
+package-lock.json      - Dependency lock file
+server.js              - Express server
+
+ROUTES (Backend):
+-----------------
+routes/auth.js              - Authentication & payment endpoints
+routes/courses.js           - Course management
+routes/enrollments.js       - Student enrollments
+routes/profiles.js          - User profiles
+routes/payments.js          - Payment processing
+routes/courseManagement.js  - Instructor course management
+
+PUBLIC (Frontend):
+------------------
+HTML Pages:
+  landing.html              - Landing page
+  signUp.html              - User registration
+  signIn.html              - User login
+  
+  Instructor Pages:
+    instructorDashboard.html - Instructor dashboard
+    instructorProfile.html   - Instructor profile
+    instructorPayment.html   - Payment processing
+    courseCreate.html        - Create new course
+    courseManage.html        - Manage course content
+  
+  Student Pages:
+    studentDashboard.html    - Student dashboard
+    browse.html              - Browse courses
+    courseDetail.html        - Course details
+    courseView.html          - View course content
+    myCourses.html           - Student's enrolled courses
+    profile.html             - Student profile
+    payment.html             - Course payment
+    payment-success.html     - Payment confirmation
+  
+  Other:
+    forgot-password.html     - Password reset
+
+JavaScript:
+  js/app.js                - Main application logic
+  js/supabaseClient.js     - Supabase client setup
+  js/notifications.js      - Notification system
+  js/auth-helper.js        - Authentication helper
+
+CSS:
+  css/theme.css            - Application styles
+
+Errors:
+  errors/404.html          - Not found page
+  errors/401.html          - Unauthorized page
+  errors/403.html          - Forbidden page
+  errors/500.html          - Server error page
+
+FEATURES:
+---------
+✅ User Authentication (Learner/Instructor)
+✅ Instructor Payment System (R 1,500 via Stripe)
+✅ Profile Management
+✅ Course Creation & Management
+✅ Course Enrollment
+✅ Payment Processing
+✅ Dashboard Analytics
+
+TECHNOLOGY STACK:
+-----------------
+Backend:  Node.js + Express
+Database: Supabase (PostgreSQL)
+Payment:  Stripe
+Frontend: HTML + TailwindCSS + Vanilla JS
+Auth:     Supabase Auth
+
+ENVIRONMENT VARIABLES REQUIRED:
+-------------------------------
+PORT
+CORS_ORIGIN
+SUPABASE_URL
+SUPABASE_ANON_KEY
+SUPABASE_SERVICE_ROLE_KEY
+STRIPE_SECRET_KEY
+STRIPE_PUBLISHABLE_KEY
+FRONTEND_URL
+
+STATUS: Production Ready ✅
